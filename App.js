@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -23,6 +23,7 @@ import NotificationsScreen from './src/screens/NotificationsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import MapScreen from './src/screens/Map';
+import FloatingButtonScreen from './src/screens/FloatingButtonScreen'
 
 const Stack = createStackNavigator();
 
@@ -39,7 +40,7 @@ function MyStack() {
 createHomeStack = () =>
   <Stack.Navigator>
     <Stack.Screen
-      name="Home"
+      name="MapScreen"
       children={this.createDrawer}
       options={{
         title: "Navigation Hooks & Themes"
@@ -54,11 +55,13 @@ createHomeStack = () =>
     />
   </Stack.Navigator>
 
-export default function App() {
-  return (
-    // <NavigationContainer>
-    //   <MyStack />
-    // </NavigationContainer>
-    <MapScreen/>
-  );
+export default class App extends Component {
+  render() {
+    return (
+      // <NavigationContainer>
+      //   <MyStack />
+      // </NavigationContainer>
+      <FloatingButtonScreen/>
+    );
+  }
 }
