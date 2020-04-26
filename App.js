@@ -20,7 +20,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/screens/HomeScreen';
 import NotificationsScreen from './src/screens/NotificationsScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
+import LoginScreen from './src/screens/Login';
 import SettingsScreen from './src/screens/SettingsScreen';
 import MapAndButton from './src/screens/Mapandbutton';
 import MapScreen from './src/screens/Map';
@@ -28,6 +28,7 @@ import FloatingButtonScreen from './src/screens/FloatingButtonScreen'
 import Forminput from './src/screens/Forminput'
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import GlobalStyle from './src/GlobalStyles'
+
 const Stack = createStackNavigator();
 
 function MyStack() {
@@ -61,7 +62,8 @@ export default class App extends Component {
     return (
       <SafeAreaProvider>
         <NavigationContainer >
-          <MyStack />
+          {/* <MyStack /> */}
+          <LoginScreen/>
         </NavigationContainer>
       </SafeAreaProvider>
     );

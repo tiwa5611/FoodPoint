@@ -40,6 +40,8 @@ target 'FoodPoint' do
 
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
 
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
+
   target 'FoodPointTests' do
     inherit! :search_paths
     # Pods for testing

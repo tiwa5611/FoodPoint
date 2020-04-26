@@ -10,6 +10,7 @@ buildscript {
         androidMapsUtilsVersion = "0.5+"
     }
     repositories {
+        mavenCentral()
         google()
         jcenter()
     }
