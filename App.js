@@ -8,13 +8,13 @@
 
 import React, { Component } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
   Text,
   StatusBar,
-  Button
+  Button,
+  SafeAreaViewBase
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -22,46 +22,48 @@ import HomeScreen from './src/screens/HomeScreen';
 import NotificationsScreen from './src/screens/NotificationsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import MapAndButton from './src/screens/Mapandbutton';
 import MapScreen from './src/screens/Map';
 import FloatingButtonScreen from './src/screens/FloatingButtonScreen'
-
+import Forminput from './src/screens/Forminput'
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import GlobalStyle from './src/GlobalStyles'
 const Stack = createStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="MapScreen" component={MapScreen} />
-      <Stack.Screen name="Notifications" component={NotificationsScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="ตำแหน่งร้านอาหาร" component={FloatingButtonScreen} />
+      <Stack.Screen name="กรอกข้อมูล" component={Forminput}/>
     </Stack.Navigator>
   );
 }
-createHomeStack = () =>
-  <Stack.Navigator>
-    <Stack.Screen
-      name="MapScreen"
-      children={this.createDrawer}
-      options={{
-        title: "Navigation Hooks & Themes"
-      }}
-    />
-    <Stack.Screen
-      name="Profile"
-      component={Profile}
-      options={{
-        title: "Detail Screen"
-      }}
-    />
-  </Stack.Navigator>
+// createHomeStack = () =>
+//   <Stack.Navigator>
+//     <Stack.Screen
+//       name="MapScreen"
+//       children={this.createDrawer}
+//       options={{
+//         title: "Navigation Hooks & Themes"
+//       }}
+//     />
+//     <Stack.Screen
+//       name="Profile"
+//       component={Profile}
+//       options={{
+//         title: "Detail Screen"
+//       }}
+//     />
+//   </Stack.Navigator>
 
 export default class App extends Component {
   render() {
     return (
-      // <NavigationContainer>
-      //   <MyStack />
-      // </NavigationContainer>
-      <FloatingButtonScreen/>
+      <SafeAreaProvider>
+        <NavigationContainer >
+          <MyStack />
+        </NavigationContainer>
+      </SafeAreaProvider>
     );
   }
 }
