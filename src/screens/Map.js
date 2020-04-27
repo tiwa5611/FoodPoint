@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Platform, Modal, Image } from 'react-native';
 import MapView, {PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import FromInput from './Forminput'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
-
+const name = "ต๋องนะ"
 const markersArray = [
   {
     title: 'point A',
-    des:'ร้านขายอาหาร',
+    des:
+      'title:ร้านขายข้าว\n'+'${name}\n'+'Tel:0833397464',
     coordinate: {
       latitude:37.419499,
       longitude:-122.080525
@@ -41,6 +44,7 @@ export default class Mapview extends Component {
       lng:null,
       coor:null,
       markers: [],
+      isModalVisible: false,
     };
   }
 
@@ -78,9 +82,7 @@ export default class Mapview extends Component {
 
   render() {
     console.log('-------------------')
-    console.log('latitude', this.state.lat)
-    console.log('longitude', this.state.lng)
-    console.log('Markers', this.state.markers)
+    // console.log('Marker', this.state.lng)
     return (
       <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
         <MapView 
@@ -88,26 +90,53 @@ export default class Mapview extends Component {
           mapType="terrain" 
           style={styles.map} 
           onLongPress={e => this.onMapPress(e)}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
           initialRegion={{latitude: this.state.lat == null ? 37.419499: this.state.lat,
                           longitude:this.state.lng == null ? -122.080525: this.state.lng,
                           latitudeDelta: 0.0922, 
                           longitudeDelta: 0.0421}}
         >
         {
-          this.state.markers != null && this.state.markers.map((marker, index) => (
+          markersArray != null && markersArray.map((marker, index) => (
             <MapView.Marker
                 key = {index}
                 coordinate={marker.coordinate}
                 title={marker.title}
                 description={marker.des}
+                onMapPress
             >
-              {console.log('index:', index)}
-              {console.log('test:', marker)}
-              {console.log('coor state:', this.state.coor)}
+              <MapView.Callout onPress={() => {this.setState({isModalVisible: !this.state.isModalVisible})}} />
             </MapView.Marker>
           ))
         }
         </MapView>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.isModalVisible}
+          >
+            <View style={styles.modalView}>
+              <View style={styles.buttonModal}>
+                <TouchableOpacity 
+                  onPress={() => { console.log('ssssssss')}} >
+                  <Icon name={'window-close'} size={20}></Icon>
+                </TouchableOpacity>
+              </View>
+              <View style={{flexDirection:'row'}}>
+                <View>
+                  <Image source={require('')}></Image>
+                </View>
+                <View>
+                  <Text>ชื่อ - สกุล</Text>
+                </View>
+              </View>
+              
+              <View>
+
+              </View>
+            </View>
+          </Modal>
       </View>
     );
   }
@@ -157,5 +186,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 22,
     color: 'white'
+  },
+  modalView:{
+    flex:1,
+    margin:20,
+    marginTop:height*0.5,
+    backgroundColor:'white',
+    borderRadius:10
+  },
+  buttonModal:{
+    flexDirection:'row',
+    justifyContent:'flex-end'
   }
 });

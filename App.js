@@ -39,31 +39,14 @@ function MyStack() {
     </Stack.Navigator>
   );
 }
-// createHomeStack = () =>
-//   <Stack.Navigator>
-//     <Stack.Screen
-//       name="MapScreen"
-//       children={this.createDrawer}
-//       options={{
-//         title: "Navigation Hooks & Themes"
-//       }}
-//     />
-//     <Stack.Screen
-//       name="Profile"
-//       component={Profile}
-//       options={{
-//         title: "Detail Screen"
-//       }}
-//     />
-//   </Stack.Navigator>
 
 export default class App extends Component {
   render() {
     return (
       <SafeAreaProvider>
         <NavigationContainer >
-          {/* <MyStack /> */}
-          <LoginScreen/>
+          <MyStack />
+          {/* <LoginScreen/> */}
         </NavigationContainer>
       </SafeAreaProvider>
     );
