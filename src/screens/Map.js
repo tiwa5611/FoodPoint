@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, Platform, Modal, Image } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Platform, Modal, Image, TouchableOpacity } from 'react-native';
 import MapView, {PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FromInput from './Forminput'
-import { TouchableOpacity } from 'react-native-gesture-handler';
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 const name = "ต๋องนะ"
@@ -118,22 +117,26 @@ export default class Mapview extends Component {
           >
             <View style={styles.modalView}>
               <View style={styles.buttonModal}>
-                <TouchableOpacity 
-                  onPress={() => { console.log('ssssssss')}} >
-                  <Icon name={'window-close'} size={20}></Icon>
+                <TouchableOpacity
+                  onPress={() => { {this.setState({isModalVisible: !this.state.isModalVisible})}}} >
+                  <Icon name={'window-close'} size={40} color={'#ecf0f1'}></Icon>
                 </TouchableOpacity>
               </View>
-              <View style={{flexDirection:'row'}}>
+              <View style={{flexDirection:'row',position:'absolute', top:15}}>
                 <View>
-                  <Image source={require('')}></Image>
+                  <Image style={styles.imageStyle}  source={require('../../android/assets/images/logo-icon.png')}></Image>
                 </View>
-                <View>
-                  <Text>ชื่อ - สกุล</Text>
-                </View>
+                <View style={{justifyContent:'space-between'}}>
+                  <Text style={{marginLeft:10}}>ชื่อ - สกุล</Text>
+                </View>                
               </View>
-              
-              <View>
-
+              <View style={{position:'absolute', top:height*0.19}}>
+                <View style={styles.viewModalDetail}>
+                  <Text style={styles.textModalDetail}>Line:</Text>
+                </View>
+                <View style={styles.viewModalDetail}>
+                  <Text style={styles.textModalDetail}>Tel:</Text>
+                </View>
               </View>
             </View>
           </Modal>
@@ -196,6 +199,20 @@ const styles = StyleSheet.create({
   },
   buttonModal:{
     flexDirection:'row',
-    justifyContent:'flex-end'
+    justifyContent:'flex-end',
+    marginTop:15,
+    marginRight:15,
+  },
+  imageStyle:{
+    width:100,
+    height:100,
+    marginLeft:20,
+  },
+  viewModalDetail:{
+    margin:10,
+  },
+  textModalDetail:{
+    fontSize:20,
+    marginLeft:15
   }
 });
