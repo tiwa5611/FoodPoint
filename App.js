@@ -18,12 +18,9 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './src/screens/HomeScreen';
-import NotificationsScreen from './src/screens/NotificationsScreen';
 import LoginScreen from './src/screens/Login';
 import SettingsScreen from './src/screens/SettingsScreen';
 import MapAndButton from './src/screens/Mapandbutton';
-import MapScreen from './src/screens/Map';
 import FloatingButtonScreen from './src/screens/FloatingButtonScreen'
 import Forminput from './src/screens/Forminput'
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -41,12 +38,20 @@ function MyStack() {
 }
 
 export default class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isVisibleScreen:false
+    };
+  }
+
   render() {
+    console.log('Spash Screen', this.state.isVisibleScreen)
     return (
       <SafeAreaProvider>
         <NavigationContainer >
-          <MyStack />
-          {/* <LoginScreen/> */}
+          <MyStack/>
         </NavigationContainer>
       </SafeAreaProvider>
     );
