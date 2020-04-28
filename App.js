@@ -19,6 +19,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/screens/Login';
+import Register from './src/screens/Register'
 import SettingsScreen from './src/screens/SettingsScreen';
 import MapAndButton from './src/screens/Mapandbutton';
 import FloatingButtonScreen from './src/screens/FloatingButtonScreen'
@@ -33,6 +34,7 @@ function MyStack() {
     <Stack.Navigator>
       <Stack.Screen name="ตำแหน่งร้านอาหาร" component={FloatingButtonScreen} />
       <Stack.Screen name="กรอกข้อมูล" component={Forminput}/>
+      <Stack.Screen name="ลงทะเบียน" component={Register}/>
     </Stack.Navigator>
   );
 }
@@ -47,11 +49,11 @@ export default class App extends Component {
   }
 
   render() {
-    console.log('Spash Screen', this.state.isVisibleScreen)
     return (
       <SafeAreaProvider>
         <NavigationContainer >
           <MyStack/>
+          {/* <LoginScreen/> */}
         </NavigationContainer>
       </SafeAreaProvider>
     );

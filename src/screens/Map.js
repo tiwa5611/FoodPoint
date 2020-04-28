@@ -49,15 +49,15 @@ export default class Mapview extends Component {
 
   componentDidMount() {
     Geolocation.getCurrentPosition( (position) => {
-      console.log('position: ', position)
+      // console.log('position: ', position)
       this.setState({
         lat:position.coords.latitude,
         lng:position.coords.longitude,
         coor:position.coords
       })
-      console.log('coords', position)
+      // console.log('coords', position)
     }, (err) => {
-      console.log('error:', err)
+      // console.log('error:', err)
     },
     { enableHighAccuracy: true, timeout: 20000 , maximumAge: 2000,})
   }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TextInput, Dimensions, TouchableOpacity, Picker} from 'react-native';
 
-width = Dimensions.get('window').width
-height = Dimensions.get('window').height
+const width = Dimensions.get('window').width
+const height = Dimensions.get('window').height
 
 export default class Forminput extends Component {
   constructor(props) {
