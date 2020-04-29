@@ -2,6 +2,7 @@ import React, { Component, useState } from 'react';
 import { Alert, View, Text, StyleSheet, Button, TextInput, Modal, Dimensions, AsyncStorage} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Register from '../screens/Register'
 import FromInput from './Forminput';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager}from 'react-native-fbsdk';
 import Map from './Map';
@@ -23,9 +24,10 @@ export default class FloatingButtonScreen extends Component {
     };
   }
 
+
+
   async componentDidMount () {
     var token = await AsyncStorage.getItem('token')
-    console.log('in componentDidMount:', await AsyncStorage.getItem('name') )
       try{
         if (token !== null ) { 
           this.setState({token:token, userID:await AsyncStorage.getItem('userID'), 
@@ -83,18 +85,21 @@ export default class FloatingButtonScreen extends Component {
   }
 
   firstLogin = () => {
-    let url = 'www.sharing.greenmile.co.th/api/profile/'+this.state.userID
+    let url = 'http://sharing.greenmile.co.th/api/profile/'+this.state.userID
+    // let url ='sharing.greenmile.co.th/api/get_category'
     console.log('********************first login funtion********************')
-    console.log('url: ', url)
-    const response = fetch(url)
-    console.log('response', response)
-    // .then((response) => response.json())
-    // .then((responseJson) => {
-    //   console.log('responseJson', responseJson.data)
-    // })
-    // .catch( error => {
-    //   console.error("Error in fetch get profile: ", error);
-    // });
+    console.log('URL', url)
+    fetch(url)
+    .then((response) => response.json())
+    .then((json) => {
+      console.log('data:', json.data)
+      if( json.data == 'not found' ) {
+        this.props.navigation.navigate('ลงทะเบียน', { name:this.state.user_name, pic: this.state.profile_pic ,userID:this.state.userID })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   async setValue(toKen, userID) {
@@ -154,7 +159,7 @@ export default class FloatingButtonScreen extends Component {
                 <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={ this.state.statusUserLogin? this.logOut : this.fbAuthen}>
                     <Icon name="facebook" style={styles.actionButtonIcon} color={this.state.statusUserLogin?'#4267B2':'gray'}/>
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={() => {this.props.navigation.navigate('ลงทะเบียน')}}>
+                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={() => {this.firstLogin}}>
                     <Icon name="search-location" style={styles.actionButtonIcon} color='#2ecc71' />
                 </ActionButton.Item>
                 <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={ () => this.setState({isModalVisible: !this.state.isModalVisible}) }>
