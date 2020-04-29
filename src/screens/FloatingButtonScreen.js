@@ -7,6 +7,8 @@ import { LoginManager, AccessToken, GraphRequest, GraphRequestManager}from 'reac
 import Map from './Map';
 
 const height = Dimensions.get('window').height
+var user_name_face = ''
+var pic_url_face= ''
 export default class FloatingButtonScreen extends Component {
   constructor(props) {
     super(props);
@@ -23,9 +25,13 @@ export default class FloatingButtonScreen extends Component {
 
   async componentDidMount () {
     var token = await AsyncStorage.getItem('token')
+    console.log('in componentDidMount:', await AsyncStorage.getItem('name') )
       try{
         if (token !== null ) { 
-          this.setState({token:token, userID:await AsyncStorage.getItem('userID'), statusUserLogin:true})
+          this.setState({token:token, userID:await AsyncStorage.getItem('userID'), 
+                        user_name:await AsyncStorage.getItem('name'), 
+                        pic_url:await AsyncStorage.getItem('pic_url'), 
+                        statusUserLogin:true})
         }
       }catch(err){
         console.error('Error:', err)
@@ -41,10 +47,11 @@ export default class FloatingButtonScreen extends Component {
       //Alert for the Error
       Alert.alert('Error fetching data: ' + error.toString());
     } else {
-      let token, userID
-      this.setState({ user_name: result.name });
-      this.setState({ profile_pic: result.picture.data.url });
-      this.setValue(token, userID, result.name, result.picture.data.url)
+      this.setState({ profile_pic: result.picture.data.url, user_name: result.name });
+      user_name_face = result.name
+      pic_url_face = result.picture.data.url
+      this.firstLogin()
+      // this.setValue(token, userID, result.name, result.picture.data.url)
     }
   };
 
@@ -58,7 +65,6 @@ export default class FloatingButtonScreen extends Component {
           console.log('fbAuthen2')
           var toKen
           var userId
-          
           AccessToken.getCurrentAccessToken().then((data) => {
             toKen = data.accessToken.toString()
             userId = data.userID.toString()
@@ -67,6 +73,7 @@ export default class FloatingButtonScreen extends Component {
             const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null,this.get_Response_Info);
             new GraphRequestManager().addRequest(infoRequest).start();
           })
+          console.log('fbAuthen() userID: ', this.state.userID)
         }
       },
       (error) => {
@@ -75,11 +82,26 @@ export default class FloatingButtonScreen extends Component {
     );
   }
 
-  async setValue(toKen, userID, name, pic_url) {
+  firstLogin = () => {
+    let url = 'www.sharing.greenmile.co.th/api/profile/'+this.state.userID
+    console.log('********************first login funtion********************')
+    console.log('url: ', url)
+    const response = fetch(url)
+    console.log('response', response)
+    // .then((response) => response.json())
+    // .then((responseJson) => {
+    //   console.log('responseJson', responseJson.data)
+    // })
+    // .catch( error => {
+    //   console.error("Error in fetch get profile: ", error);
+    // });
+  }
+
+  async setValue(toKen, userID) {
     await AsyncStorage.setItem('token', toKen)
     await AsyncStorage.setItem('userID', userID)
-    await AsyncStorage.setItem('name', name)
-    await AsyncStorage.setItem('pic_url', pic_url)
+    await AsyncStorage.setItem('name', user_name_face)
+    await AsyncStorage.setItem('pic_url', pic_url_face)
   }
 
   logOut = () => {
