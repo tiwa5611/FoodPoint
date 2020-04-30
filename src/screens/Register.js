@@ -18,16 +18,9 @@ export default class Register extends Component {
       };
   }
 
-  componentDidMount() {
 
-  }
   
-  shouldComponentUpdate() {
-    return false
-  }
-
   submitButton() {
-    
       console.log('student_id', this.state.student_id)
       console.log('batch', this.state.batch)
       console.log('name', this.state.name)

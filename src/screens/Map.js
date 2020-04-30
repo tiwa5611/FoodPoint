@@ -6,35 +6,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import FromInput from './Forminput'
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
-const name = "ต๋องนะ"
-const markersArray = [
-  {
-    title: 'point A',
-    des:
-      'title:ร้านขายข้าว\n'+'${name}\n'+'Tel:0833397464',
-    coordinate: {
-      latitude:37.419499,
-      longitude:-122.080525
-    }
-  },
-  {
-    title: 'point B',
-    des:'ร้านขายรองเท้า',
-    coordinate: {
-      latitude:37.421971,
-      longitude:-122.089740
-    }
-  },
-  {
-    title: 'point C',
-    des:'ร้านขายเสื้อผ้า',
-    coordinate: {
-      latitude:37.426593,
-      longitude:-122.081076
-    }
-  }
-
-]
 export default class Mapview extends Component {
   constructor(props) {
     super(props);
@@ -97,7 +68,7 @@ export default class Mapview extends Component {
                           longitudeDelta: 0.0421}}
         >
         {
-          markersArray != null && markersArray.map((marker, index) => (
+          this.state.markers != null && this.state.markers.map((marker, index) => (
             <MapView.Marker
                 key = {index}
                 coordinate={marker.coordinate}
@@ -119,7 +90,7 @@ export default class Mapview extends Component {
               <View style={styles.buttonModal}>
                 <TouchableOpacity
                   onPress={() => { {this.setState({isModalVisible: !this.state.isModalVisible})}}} >
-                  <Icon name={'window-close'} size={40} color={'#ecf0f1'}></Icon>
+                  <Icon name={'times'} size={25} color={'#ecf0f1'}></Icon>
                 </TouchableOpacity>
               </View>
               <View style={{flexDirection:'row',position:'absolute', top:15}}>
@@ -127,15 +98,15 @@ export default class Mapview extends Component {
                   <Image style={styles.imageStyle}  source={require('../../android/assets/images/logo-icon.png')}></Image>
                 </View>
                 <View style={{justifyContent:'space-between'}}>
-                  <Text style={{marginLeft:10}}>ชื่อ - สกุล</Text>
+                  <Text style={{marginLeft:10}} >ชื่อ - สกุล</Text>
                 </View>                
               </View>
               <View style={{position:'absolute', top:height*0.19}}>
                 <View style={styles.viewModalDetail}>
-                  <Text style={styles.textModalDetail}>Line:</Text>
+                  <Icon name={'line'} style={styles.textModalDetail} color={'#3ae374'}/>
                 </View>
                 <View style={styles.viewModalDetail}>
-                  <Text style={styles.textModalDetail}>Tel:</Text>
+                  <Icon name={'phone'} style={styles.textModalDetail} color={'gray'}/>
                 </View>
               </View>
             </View>
@@ -212,7 +183,7 @@ const styles = StyleSheet.create({
     margin:10,
   },
   textModalDetail:{
-    fontSize:20,
+    fontSize:width*0.09,
     marginLeft:15
   }
 });

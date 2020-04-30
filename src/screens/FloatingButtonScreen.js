@@ -1,26 +1,109 @@
 import React, { Component, useState } from 'react';
-import { Alert, View, Text, StyleSheet, Button, TextInput, Modal, Dimensions, AsyncStorage} from 'react-native';
+import { Alert, View, Text, StyleSheet, Button, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Register from '../screens/Register'
 import FromInput from './Forminput';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager}from 'react-native-fbsdk';
 import Map from './Map';
-
+const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 var user_name_face = ''
 var pic_url_face= ''
+
+var province_th = [
+  'กรุงเทพฯ',
+  'กระบี่',
+  'กาญจนบุรี',
+  'กาฬสินธุ์',
+  'กำแพงเพชร',
+  'ขอนแก่น',
+  'จันทบุรี',
+  'ฉะเชิงเทรา',
+  'ชลบุรี',
+  'ชัยนาท',
+  'ชัยภูมิ',
+  'ชุมพร',
+  'เชียงใหม่',
+  'เชียงราย',
+  'ตรัง',
+  'ตราด',
+  'ตาก',
+  'นครนายก',
+  'นครปฐม',
+  'นครพนม',
+  'นครราชสีมา',
+  'นครศรีธรรมราช',
+  'นครสวรรค์',
+  'นนทบุรี',
+  'นราธิวาส',
+  'น่าน',
+  'บึงกาฬ',
+  'บุรีรัมย์',
+  'ปทุมธานี',
+  'ประจวบคีรีขันธ์',
+  'ปราจีนบุรี',
+  'ปัตตานี',
+  'พระนครศรีอยุธยา',
+  'พะเยา',
+  'พังงา',
+  'พัทลุง',
+  'พิจิตร',
+  'พิษณุโลก',
+  'เพชรบุรี',
+  'เพชรบูรณ์',
+  'แพร่',
+  'ภูเก็ต',
+  'มหาสารคาม',
+  'มุกดาหาร',
+  'แม่ฮ่องสอน',
+  'ยโสธร',
+  'ยะลา',
+  'ร้อยเอ็ด',
+  'ระนอง',
+  'ระยอง',
+  'ราชบุรี',
+  'ลพบุรี',
+  'ลำปาง',
+  'ลำพูน',
+  'เลย',
+  'ศรีสะเกษ',
+  'สกลนคร',
+  'สงขลา',
+  'สตูล',
+  'สมุทรปราการ',
+  'สมุทรสงคราม',
+  'สมุทรสาคร',
+  'สระแก้ว',
+  'สระบุรี',
+  'สิงห์บุรี',
+  'สุโขทัย',
+  'สุพรรณบุรี',
+  'สุราษฎร์ธานี',
+  'สุรินทร์',
+  'หนองคาย',
+  'หนองบัวลำภู',
+  'อ่างทอง',
+  'อำนาจเจริญ',
+  'อุดรธานี',
+  'อุตรดิตถ์',
+  'อุทัยธานี',
+  'อุบลราชธานี',
+];
+
 export default class FloatingButtonScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalVisible: false,
+      isModalVisibleInput: false,
+      isModalVisibleSearch:false,
       statusUserLogin:false,
       //-------------------------- variable facebook ----------------------------
       token:'',
       userID:'',
       profile_pic:'',
-      user_name:''
+      user_name:'',
+      get_categorial:[]
     };
   }
 
@@ -38,11 +121,8 @@ export default class FloatingButtonScreen extends Component {
       }catch(err){
         console.error('Error:', err)
       }
+      this.fetchAPIGet_category()
   }
-
-  toggleModal = () => {
-    this.setState({isModalVisible: !this.state.isModalVisible});
-  };
 
   get_Response_Info = (error, result) => {
     if (error) {
@@ -52,13 +132,12 @@ export default class FloatingButtonScreen extends Component {
       this.setState({ profile_pic: result.picture.data.url, user_name: result.name });
       user_name_face = result.name
       pic_url_face = result.picture.data.url
-      this.firstLogin()
+      this.firstLogin
       // this.setValue(token, userID, result.name, result.picture.data.url)
     }
   };
 
   fbAuthen = () => {
-    console.log('fbAuthen1')
     LoginManager.logInWithPermissions(["public_profile"]).then(
       (result) => {
         if (result.isCancelled) {
@@ -75,7 +154,6 @@ export default class FloatingButtonScreen extends Component {
             const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null,this.get_Response_Info);
             new GraphRequestManager().addRequest(infoRequest).start();
           })
-          console.log('fbAuthen() userID: ', this.state.userID)
         }
       },
       (error) => {
@@ -84,11 +162,9 @@ export default class FloatingButtonScreen extends Component {
     );
   }
 
-  firstLogin = () => {
+  firstLogin() {
+    console.log('http://sharing.greenmile.co.th/api/profile/'+this.state.userID)
     let url = 'http://sharing.greenmile.co.th/api/profile/'+this.state.userID
-    // let url ='sharing.greenmile.co.th/api/get_category'
-    console.log('********************first login funtion********************')
-    console.log('URL', url)
     fetch(url)
     .then((response) => response.json())
     .then((json) => {
@@ -98,7 +174,20 @@ export default class FloatingButtonScreen extends Component {
       }
     })
     .catch((error) => {
-      console.error(error);
+      console.error('profile',error);
+    });
+  }
+
+  fetchAPIGet_category = () => {
+    console.log('***************fetchAPIGet_category************')
+    fetch('http://sharing.greenmile.co.th/api/get_category')
+    .then((response) => response.json())
+    .then((json) => {
+      console.log('APIGet_category:', json.data)
+      this.setState({get_categorial:json.data})
+    })
+    .catch((error) => {
+      console.error('Error in fetchAPIGet_category: ',error);
     });
   }
 
@@ -106,7 +195,7 @@ export default class FloatingButtonScreen extends Component {
     await AsyncStorage.setItem('token', toKen)
     await AsyncStorage.setItem('userID', userID)
     await AsyncStorage.setItem('name', user_name_face)
-    await AsyncStorage.setItem('pic_url', pic_url_face)
+    await AsyncStorage.setItem('get_categorial', get_categorial)
   }
 
   logOut = () => {
@@ -137,32 +226,177 @@ export default class FloatingButtonScreen extends Component {
     console.log('token: ', this.state.token)
     console.log('userID: ', this.state.userID)
     console.log('user_name: ', this.state.user_name)
-    console.log('Pictur_url: ', this.state.profile_pic)
+    console.log('get_categorial: ', this.state.get_categorial)
+    const { lat, lng } = this.props.route.params
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
-            {/* <-------------------------------------------------------------------Map-------------------------------------------------------------- */} 
+            {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
             <Map/>
-            {/* <-------------------------------------------------------------------Modal-------------------------------------------------------------- */}
+            {/* <------------------------------------------------------------------- Modal form Search -------------------------------------------------------------- */}
             <Modal
               animationType="fade"
               transparent={true}
-              visible={this.state.isModalVisible}
+              visible={this.state.isModalVisibleSearch}
               onRequestClose={() => {
                 Alert.alert("Modal has been closed.");
               }}
             >
-              <View style={styles.modalView}>
-                <FromInput/>
+              <View style={{flex:1, backgroundColor:'white', marginLeft:30, marginRight:30, marginTop:height*0.3, marginBottom:height*0.3, borderRadius:5,}}>
+                  <View style={{flexDirection:'row', marginLeft:30, marginRight:30, marginTop:20, borderWidth:1, borderColor:'gray', marginBottom:10, borderRadius:5}}>
+                      <Text style={{fontFamily:'Kanit-Thin' , fontSize:20, padding:10}}>Province |</Text>
+                      <View style={{flex:1}}>
+                          <Picker
+                          selectedValue={this.state.language}
+                          style={{flex:1}}
+                          onValueChange={(itemValue, itemIndex) =>
+                            this.setState({language: itemValue})
+                          }>
+                            <Picker.Item label="เลือกจังหวัด"/>
+                            <Picker.Item label="JavaScript1" value="js1" />
+                            <Picker.Item label="JavaScript2" value="js2" />
+                            <Picker.Item label="JavaScript3" value="js3" />
+                        </Picker>
+                      </View>
+                  </View>
+                  <View style={{flexDirection:'row',  marginLeft:30, marginRight:30, borderWidth:1, borderColor:'gray',borderRadius:5}}>
+                      <Text style={{fontFamily:'Kanit-Thin', fontSize:20, padding:10}}>Categories |</Text>
+                      <View style={{flex:1}}>
+                          <Picker
+                          selectedValue={this.state.language}
+                          style={{flex:1}}
+                          onValueChange={(itemValue, itemIndex) =>
+                            this.setState({language: itemValue})
+                          }>
+                            
+                            <Picker.Item label="JavaScript1" value="js1" />
+                            <Picker.Item label="JavaScript2" value="js2" />
+                            <Picker.Item label="JavaScript3" value="js3" />
+                        </Picker>
+                      </View>
+                  </View>
+                <TouchableOpacity 
+                style={{flexDirection:'row', backgroundColor:'#78e08f', justifyContent:'center', alignItems:'center', marginLeft:width*0.25, marginRight:width*0.25, borderRadius:5, marginTop:height*0.025}}
+                activeOpacity={0.5} 
+                onPress={() => { {this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}}}>
+                  <Icon name={'search'}></Icon>
+                    <Text style={{fontSize:20, fontFamily:'Kanit-Thin', padding:5}}>ค้นหา</Text>
+                </TouchableOpacity>
               </View>
             </Modal>
+            {/* <------------------------------------------------------------------- Modal form input -------------------------------------------------------------- */} 
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={this.state.isModalVisibleInput}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+              }}
+            >
+            <View style={styles.modalView}>
+            <ScrollView>
+              <View style={styles.container}>
+                  <View>
+                      <Text style={styles.textHeader}>ชื่อร้าน</Text>
+                      <TextInput
+                        style={styles.textInput}
+                      />
+                  </View>
+                  <View style={{ flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+                      <Text style={styles.textHeader}>Categories</Text>
+                      <View style={{ flex:1, borderWidth:1, borderColor:'#dfe6e9', margin:5, borderRadius:5}}>
+                        <Picker
+                          selectedValue={this.state.language}
+                          style={{flex:1}}
+                          onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})
+                          }>
+                            { this.state.get_categorial !== null && this.state.get_categorial.map((value) => {
+                                {console.log('name:'+value.name +'     ', 'ID: '+value.id)}
+                                return <Picker.Item label={value.name} value={value.id} />
+                              })
+                            }
+                        </Picker>
+                      </View>
+                  </View>
+                  <View>
+                      <Text style={styles.textHeader}>รายละเอียดสินค้า</Text>
+                      <TextInput
+                        style={{height:height*0.13, borderWidth:2, borderRadius:4, borderColor:'#dfe6e9'}}
+                        multiline
+                        numberOfLines={4}
+                      />
+                  </View>
+                  <View style={{ flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+                      <Text style={styles.textHeader}>Tel</Text>
+                      <View style={{ flex:1}}>
+                          <TextInput
+                            style={styles.textInput}
+                            keyboardType={"numeric"}
+                            maxLength={10}
+                          />
+                        </View>
+                  </View>
+                  <View style={{ flexDirection:'row', justifyContent:'center', alignItems:'center'}}> 
+                        <Text style={styles.textHeader}>Line ID.</Text>
+                        <View style={{ flex:1}}>
+                          <TextInput
+                            style={styles.textInput}
+                          />
+                        </View>
+                  </View>
+                  <View style={{ flexDirection:'row', justifyContent:'center', alignItems:'center'}}> 
+                        <Text style={styles.textHeader}>Facebook</Text>
+                        <View style={{ flex:1}}>
+                          <TextInput
+                            style={styles.textInput}
+                          />
+                        </View>
+                  </View>
+                  <View>
+                      <Text style={styles.textHeader}>Province</Text>
+                      <View style={{ flex:1, borderWidth:1, borderColor:'#dfe6e9', margin:5, borderRadius:5}}>
+                        <Picker
+                          selectedValue={this.state.language}
+                          style={{flex:1}}
+                          onValueChange={(itemValue, itemIndex) =>
+                            this.setState({language: itemValue})
+                          }>
+                            { province_th.map((value) => {
+                                return <Picker.Item label={value} value={value}/>
+                              }) 
+                            }
+                        </Picker>
+                      </View>
+                  </View>
+                  <View>
+                      <Text style={styles.textHeader}>พิกัด</Text>
+                      <TextInput
+                        style={styles.textInput}
+                        editable={false}
+                        value={}
+                      />
+                  </View>
+                  <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:20}}>
+                    <TouchableOpacity style={styles.buttonSuccess} activeOpacity={0.5}>
+                      <Text style={{fontSize:20, fontFamily:'Kanit-Thin'}}>บันทึก</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonCancel} activeOpacity={0.5} onPress={ () => this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})}>
+                      <Text style={{fontSize:20, fontFamily:'Kanit-Thin'}}>ยกเลิก</Text>
+                    </TouchableOpacity>
+                  </View>
+              </View>
+            </ScrollView>
+            </View>
+            </Modal>
+            {/* <------------------------------------------------------------------- end modal form input -------------------------------------------------------------- */} 
+
             <ActionButton buttonColor="rgb(120, 224, 143)">
                 <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={ this.state.statusUserLogin? this.logOut : this.fbAuthen}>
                     <Icon name="facebook" style={styles.actionButtonIcon} color={this.state.statusUserLogin?'#4267B2':'gray'}/>
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={() => {this.firstLogin}}>
+                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={() => {{this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}}}>
                     <Icon name="search-location" style={styles.actionButtonIcon} color='#2ecc71' />
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={ () => this.setState({isModalVisible: !this.state.isModalVisible}) }>
+                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={ () => this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})}>
                     <Icon name="map-marker-alt"  style={styles.actionButtonIcon} color='#e74c3c' />
                 </ActionButton.Item>
             </ActionButton>
@@ -170,6 +404,7 @@ export default class FloatingButtonScreen extends Component {
     );
   }
 }
+// 
 
 const styles = StyleSheet.create({
     actionButtonIcon: {
@@ -182,5 +417,42 @@ const styles = StyleSheet.create({
       marginTop:height*0.22,
       backgroundColor:'white',
       borderRadius:10
-    }
+    },
+    container: {
+      flex:1,
+      margin:20
+  },
+  textHeader:{
+    fontSize:width*0.05,
+    marginBottom:10,
+    marginTop:20,
+    marginRight:10,
+    // fontFamily:'DancingScript-Regular' 
+  },
+  textInput: {
+    borderWidth:2,
+    borderColor:'#dfe6e9',
+    padding:0,
+    borderRadius:5,
+    height:height*0.06,
+    marginBottom:10,
+  }, 
+  buttonSuccess: {
+    backgroundColor:'#2ecc71',
+    height:50,
+    width:80,
+    borderRadius:5,
+    justifyContent:'center', 
+    alignItems:'center',
+    marginRight:10
+  },
+  buttonCancel: {
+    backgroundColor:'#e74c3c',
+    height:50,
+    width:80,
+    borderRadius:5,
+    justifyContent:'center', 
+    alignItems:'center',
+    marginLeft:10
+  }
 });
