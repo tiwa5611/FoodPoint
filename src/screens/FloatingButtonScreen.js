@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react';
 import { Alert, View, Text, StyleSheet, Button, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity} from 'react-native';
 import ActionButton from 'react-native-action-button';
+// import { Icon } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Register from '../screens/Register'
 import FromInput from './Forminput';
@@ -132,7 +133,7 @@ export default class FloatingButtonScreen extends Component {
       this.setState({ profile_pic: result.picture.data.url, user_name: result.name });
       user_name_face = result.name
       pic_url_face = result.picture.data.url
-      this.firstLogin
+      this.firstLogin.bind(this)
       // this.setValue(token, userID, result.name, result.picture.data.url)
     }
   };
@@ -195,7 +196,7 @@ export default class FloatingButtonScreen extends Component {
     await AsyncStorage.setItem('token', toKen)
     await AsyncStorage.setItem('userID', userID)
     await AsyncStorage.setItem('name', user_name_face)
-    await AsyncStorage.setItem('get_categorial', get_categorial)
+    await AsyncStorage.setItem('pic_url', pic_url_face)
   }
 
   logOut = () => {
@@ -222,12 +223,11 @@ export default class FloatingButtonScreen extends Component {
   }
 
   render() {
-    console.log('Status user in system: ', this.state.statusUserLogin)
-    console.log('token: ', this.state.token)
-    console.log('userID: ', this.state.userID)
-    console.log('user_name: ', this.state.user_name)
-    console.log('get_categorial: ', this.state.get_categorial)
-    const { lat, lng } = this.props.route.params
+    // console.log('Status user in system: ', this.state.statusUserLogin)
+    // console.log('token: ', this.state.token)
+    // console.log('userID: ', this.state.userID)
+    // console.log('user_name: ', this.state.user_name)
+    // console.log('get_categorial: ', this.state.get_categorial)
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
@@ -310,7 +310,6 @@ export default class FloatingButtonScreen extends Component {
                           onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})
                           }>
                             { this.state.get_categorial !== null && this.state.get_categorial.map((value) => {
-                                {console.log('name:'+value.name +'     ', 'ID: '+value.id)}
                                 return <Picker.Item label={value.name} value={value.id} />
                               })
                             }
@@ -325,7 +324,7 @@ export default class FloatingButtonScreen extends Component {
                         numberOfLines={4}
                       />
                   </View>
-                  <View style={{ flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+                  <View style={{ flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:15}}>
                       <Text style={styles.textHeader}>Tel</Text>
                       <View style={{ flex:1}}>
                           <TextInput
@@ -372,7 +371,7 @@ export default class FloatingButtonScreen extends Component {
                       <TextInput
                         style={styles.textInput}
                         editable={false}
-                        value={}
+                        // value={}
                       />
                   </View>
                   <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:20}}>
@@ -420,14 +419,16 @@ const styles = StyleSheet.create({
     },
     container: {
       flex:1,
-      margin:20
+      marginRight:10,
+      marginLeft:10,
+      marginBottom:10
   },
   textHeader:{
     fontSize:width*0.05,
     marginBottom:10,
     marginTop:20,
     marginRight:10,
-    // fontFamily:'DancingScript-Regular' 
+    fontFamily:'Kanit-ExtraLight' 
   },
   textInput: {
     borderWidth:2,

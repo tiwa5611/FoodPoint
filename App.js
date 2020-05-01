@@ -31,12 +31,18 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen style={{fontFamily:'Kanit-Bold', backgroundColor:"#ffcccc" }} name="ร้านอาหาร" 
+      <Stack.Screen name="ร้านอาหาร" 
                   component={FloatingButtonScreen} 
-                  options={{headerTitleAlign:"center",
-                  headerStyle: {
-                    backgroundColor:'#7bed9f',
-                  }}}
+                  options={{
+                    // headerTitleAlign:"center",
+                    headerStyle: {
+                      backgroundColor:'#7bed9f',
+                      
+                    },
+                    headerTitleStyle: {
+                      fontFamily:'Kanit-ExtraLight'
+                    }
+                  }}
                 />
       <Stack.Screen style={{fontFamily:'Kanit-Light' }} name="กรอกข้อมูล" component={Forminput}/>
       <Stack.Screen style={{fontFamily:'Kanit-Light' }} name="ลงทะเบียน" component={Register} options={{headerTitleAlign:"center", headerLeft: null}}/>
