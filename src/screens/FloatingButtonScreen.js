@@ -92,6 +92,9 @@ var province_th = [
   'อุบลราชธานี',
 ];
 
+
+
+
 export default class FloatingButtonScreen extends Component {
   constructor(props) {
     super(props);
@@ -133,11 +136,32 @@ export default class FloatingButtonScreen extends Component {
       this.setState({ profile_pic: result.picture.data.url, user_name: result.name });
       user_name_face = result.name
       pic_url_face = result.picture.data.url
-      this.firstLogin.bind(this)
+      // this.firstLogin.bind(this)
+      this.firstUserLogin()
       // this.setValue(token, userID, result.name, result.picture.data.url)
     }
   };
 
+  firstUserLogin() {
+    console.log('http://sharing.greenmile.co.th/api/profile/'+this.state.userID)
+    let url = 'http://sharing.greenmile.co.th/api/profile/'+this.state.userID
+    fetch(url)
+    .then((response) => response.json())
+    .then((json) => {
+      console.log('data:', json.data)
+      if( json.data == 'not found' ) {
+        this.props.navigation.navigate('ลงทะเบียน', { data:{
+          username:user_name_face,
+          imageProfile:pic_url_face,
+          user_id:this.state.userID
+        }})
+      }
+    })
+    .catch((error) => {
+      console.error('profile',error);
+    });
+  }
+  // 
   fbAuthen = () => {
     LoginManager.logInWithPermissions(["public_profile"]).then(
       (result) => {
@@ -161,22 +185,6 @@ export default class FloatingButtonScreen extends Component {
         console.log("Login fail with error: " + error);
       }
     );
-  }
-
-  firstLogin() {
-    console.log('http://sharing.greenmile.co.th/api/profile/'+this.state.userID)
-    let url = 'http://sharing.greenmile.co.th/api/profile/'+this.state.userID
-    fetch(url)
-    .then((response) => response.json())
-    .then((json) => {
-      console.log('data:', json.data)
-      if( json.data == 'not found' ) {
-        this.props.navigation.navigate('ลงทะเบียน', { name:this.state.user_name, pic: this.state.profile_pic ,userID:this.state.userID })
-      }
-    })
-    .catch((error) => {
-      console.error('profile',error);
-    });
   }
 
   fetchAPIGet_category = () => {
@@ -376,10 +384,10 @@ export default class FloatingButtonScreen extends Component {
                   </View>
                   <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:20}}>
                     <TouchableOpacity style={styles.buttonSuccess} activeOpacity={0.5}>
-                      <Text style={{fontSize:20, fontFamily:'Kanit-Thin'}}>บันทึก</Text>
+                      <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight'}}>บันทึก</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonCancel} activeOpacity={0.5} onPress={ () => this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})}>
-                      <Text style={{fontSize:20, fontFamily:'Kanit-Thin'}}>ยกเลิก</Text>
+                      <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight'}}>ยกเลิก</Text>
                     </TouchableOpacity>
                   </View>
               </View>
@@ -401,6 +409,10 @@ export default class FloatingButtonScreen extends Component {
             </ActionButton>
         </View>
     );
+  }
+
+  firstLogin = () => {
+    
   }
 }
 // 

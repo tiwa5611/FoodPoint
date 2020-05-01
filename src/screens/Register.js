@@ -5,6 +5,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 
+var facebook_id_temp
+
 export default class Register extends Component {
   constructor(props) {
     super(props);
@@ -17,15 +19,13 @@ export default class Register extends Component {
         facebook_id:null,
       };
   }
-
-
   
   submitButton() {
       console.log('student_id', this.state.student_id)
       console.log('batch', this.state.batch)
       console.log('name', this.state.name)
       console.log('phonenumber', this.state.phonenumber)
-      console.log('facebook_id', this.state.facebook_id)
+      console.log('facebook_id', facebook_id_temp)
 
       fetch('http://sharing.greenmile.co.th/api/register',{
         method: 'POST',
@@ -38,7 +38,8 @@ export default class Register extends Component {
             batch: this.state.batch,
             name: this.state.name,
             phonenumber: this.state.phonenumber,
-            facebook_id: this.state.facebook_id,
+            facebook_id: facebook_id_temp,
+            line_id: this.state.line_id
           }),
       })
       .then((response) => response.json())
@@ -53,24 +54,25 @@ export default class Register extends Component {
  
   render() {
 
-    const { name, pic, userID } = this.props.route.params; 
-    console.log('name', name)
-    console.log('pic', pic)
-    this.setState({name:name, facebook_id:userID})
-
+    const { data } = this.props.route.params; 
+    console.log('name', data.username)
+    console.log('pic', data.imageProfile)
+    console.log('UserID', data.user_id)
+    facebook_id_temp = data.user_id
     return (
       <ScrollView>
         <View style={{ flex: 1, backgroundColor:'white'}}>
           <View style={{marginLeft:30, marginRight:30}}>
           <View style={styles.viewImage}>
-                  <Image style={styles.imageStyle} source={{uri: pic}}></Image>
+              <Image style={styles.imageStyle} source={{uri: data.imageProfile}}></Image>
           </View>
           <View style={styles.viewTextInput}> 
             <View style={{ flex:1}}>
+              {console.log('name in state: ', this.state.name)}
               <TextInput
                 style={{textAlign:'center',borderWidth:2,borderColor:'#dfe6e9',padding:0, borderRadius:5,height:height*0.06,marginBottom:10,}}
-                placeholder={name}
-                value={this.state.name  == ''? this.setState({name:name}): this.state.name}
+                placeholder={data.username}
+                value={this.state.name  == null? this.setState({name:data.username}): this.state.name}
                 onChangeText={(text) => this.setState({name: text})}
               />
             </View>
@@ -104,8 +106,8 @@ export default class Register extends Component {
               <Text style={{marginBottom:5}}>Student ID.</Text>
               <View style={{flex:1}}>
                 <TextInput
-                  style={styles.textInput}
                   keyboardType={'numeric'}
+                  style={styles.textInput}
                   onChangeText={(text) => this.setState({student_id: text})}
                 />
               </View>
