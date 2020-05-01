@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Alert, View, Text, StyleSheet, Button, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity, AppRegistry} from 'react-native';
+import { Alert, View, Text, StyleSheet, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity} from 'react-native';
 import ActionButton from 'react-native-action-button';
 // import { Icon } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -12,94 +12,12 @@ const height = Dimensions.get('window').height
 var user_name_face = ''
 var pic_url_face= ''
 
-var province_th = [
-  'กรุงเทพฯ',
-  'กระบี่',
-  'กาญจนบุรี',
-  'กาฬสินธุ์',
-  'กำแพงเพชร',
-  'ขอนแก่น',
-  'จันทบุรี',
-  'ฉะเชิงเทรา',
-  'ชลบุรี',
-  'ชัยนาท',
-  'ชัยภูมิ',
-  'ชุมพร',
-  'เชียงใหม่',
-  'เชียงราย',
-  'ตรัง',
-  'ตราด',
-  'ตาก',
-  'นครนายก',
-  'นครปฐม',
-  'นครพนม',
-  'นครราชสีมา',
-  'นครศรีธรรมราช',
-  'นครสวรรค์',
-  'นนทบุรี',
-  'นราธิวาส',
-  'น่าน',
-  'บึงกาฬ',
-  'บุรีรัมย์',
-  'ปทุมธานี',
-  'ประจวบคีรีขันธ์',
-  'ปราจีนบุรี',
-  'ปัตตานี',
-  'พระนครศรีอยุธยา',
-  'พะเยา',
-  'พังงา',
-  'พัทลุง',
-  'พิจิตร',
-  'พิษณุโลก',
-  'เพชรบุรี',
-  'เพชรบูรณ์',
-  'แพร่',
-  'ภูเก็ต',
-  'มหาสารคาม',
-  'มุกดาหาร',
-  'แม่ฮ่องสอน',
-  'ยโสธร',
-  'ยะลา',
-  'ร้อยเอ็ด',
-  'ระนอง',
-  'ระยอง',
-  'ราชบุรี',
-  'ลพบุรี',
-  'ลำปาง',
-  'ลำพูน',
-  'เลย',
-  'ศรีสะเกษ',
-  'สกลนคร',
-  'สงขลา',
-  'สตูล',
-  'สมุทรปราการ',
-  'สมุทรสงคราม',
-  'สมุทรสาคร',
-  'สระแก้ว',
-  'สระบุรี',
-  'สิงห์บุรี',
-  'สุโขทัย',
-  'สุพรรณบุรี',
-  'สุราษฎร์ธานี',
-  'สุรินทร์',
-  'หนองคาย',
-  'หนองบัวลำภู',
-  'อ่างทอง',
-  'อำนาจเจริญ',
-  'อุดรธานี',
-  'อุตรดิตถ์',
-  'อุทัยธานี',
-  'อุบลราชธานี',
-];
-
-
-
 
 export default class FloatingButtonScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalVisibleInput: false,
+      isModalVisibleInput:false,
       isModalVisibleSearch:false,
       statusUserLogin:false,
       //-------------------------- variable facebook ----------------------------
@@ -107,11 +25,28 @@ export default class FloatingButtonScreen extends Component {
       userID:'',
       profile_pic:'',
       user_name:'',
-      get_categorial:[]
+      get_categorial:[],
+      get_province:[],
+      //--------------------------- variable for input form ----------------------
+      shop_name_state:'',
+      description_state:'',
+      phonenumber_state:'',
+      line_id_state:'',
+      facebook_id_state:'',
+      category_state:'',
+      province_state:'',
+      latitude_state:'',
+      longitude_state:'',
     };
+    this.handleLatLong = this.handleLatLong.bind(this)
   }
 
-
+  handleLatLong (lat, lng) {
+    this.setState({
+      latitude_state:lat,
+      longitude_state:lng
+    })
+  }
 
   async componentDidMount () {
     var token = await AsyncStorage.getItem('token')
@@ -125,7 +60,7 @@ export default class FloatingButtonScreen extends Component {
       }catch(err){
         console.error('Error:', err)
       }
-      this.fetchAPIGet_category()
+      // this.fetchAPIGet_category()
   }
 
   get_Response_Info = (error, result) => {
@@ -185,24 +120,13 @@ export default class FloatingButtonScreen extends Component {
     );
   }
 
-  fetchAPIGet_category = () => {
-    console.log('***************fetchAPIGet_category************')
-    fetch('http://sharing.greenmile.co.th/api/get_category')
-    .then((response) => response.json())
-    .then((json) => {
-      console.log('APIGet_category:', json.data)
-      this.setState({get_categorial:json.data})
-    })
-    .catch((error) => {
-      console.error('Error in fetchAPIGet_category: ',error);
-    });
-  }
+
 
   async setValue(toKen, userID) {
-    await AsyncStorage.setItem('token', toKen)
-    await AsyncStorage.setItem('userID', userID)
-    await AsyncStorage.setItem('name', user_name_face)
-    await AsyncStorage.setItem('pic_url', pic_url_face)
+    await AsyncStorage.setItem('token',toKen)
+    await AsyncStorage.setItem('userID',userID)
+    await AsyncStorage.setItem('name',user_name_face)
+    await AsyncStorage.setItem('pic_url',pic_url_face)
   }
 
   logOut = () => {
@@ -229,16 +153,22 @@ export default class FloatingButtonScreen extends Component {
   }
 
   render() {
-    console.log('Status user in system: ', this.state.statusUserLogin)
-    // console.log('token: ', this.state.token)
-    // console.log('userID: ', this.state.userID)
+    // console.log('Status user in system: ',this.state.statusUserLogin)
+    // console.log('name : ',this.state.shop_name_state)
+    // console.log('description: ',this.state.description_state)
+    // console.log('phonenumber: ',this.state.phonenumber_state)
+    // console.log('line_id :',this.state.line_id_state)
+    // console.log('user_facebook_id:',this.state.userID)
+    // console.log('category:',this.state.category_state)
+    // console.log('province:',this.state.province_state)
+    // console.log('location:',this.state.latitude_state+' , '+this.state.longitude_state)
+    // console.log('facebook_id:',this.state.facebook_id_state)
     // console.log('user_name: ', this.state.user_name)
     // console.log('get_categorial: ', this.state.get_categorial)
-    var result
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
-            <Map/>
+            <Map handleResponse={this.handleLatLong}/>
             {/* <------------------------------------------------------------------- Modal form Search -------------------------------------------------------------- */}
             <Modal
               animationType="fade"
@@ -306,15 +236,16 @@ export default class FloatingButtonScreen extends Component {
                       <Text style={styles.textHeader}>ชื่อร้าน</Text>
                       <TextInput
                         style={styles.textInput}
+                        onChangeText={(text) => this.setState({shop_name_state:text})}
                       />
                   </View>
                   <View style={{ flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                       <Text style={styles.textHeader}>Categories</Text>
                       <View style={{ flex:1, borderWidth:1, borderColor:'#dfe6e9', margin:5, borderRadius:5}}>
                         <Picker
-                          selectedValue={this.state.language}
+                          selectedValue={this.state.category_state == ''? 'กระเป๋า': this.state.category_state}
                           style={{flex:1}}
-                          onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})
+                          onValueChange={(itemValue, itemIndex) => this.setState({category_state: itemValue})
                           }>
                             { this.state.get_categorial !== null && this.state.get_categorial.map((value) => {
                                 return <Picker.Item label={value.name} value={value.id} />
@@ -329,6 +260,7 @@ export default class FloatingButtonScreen extends Component {
                         style={{height:height*0.13, borderWidth:2, borderRadius:4, borderColor:'#dfe6e9'}}
                         multiline
                         numberOfLines={4}
+                        onChangeText={(text) => this.setState({description_state:text})}
                       />
                   </View>
                   <View style={{ flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:15}}>
@@ -338,6 +270,7 @@ export default class FloatingButtonScreen extends Component {
                             style={styles.textInput}
                             keyboardType={"numeric"}
                             maxLength={10}
+                            onChangeText={(text) => this.setState({phonenumber_state:text})}
                           />
                         </View>
                   </View>
@@ -346,6 +279,7 @@ export default class FloatingButtonScreen extends Component {
                         <View style={{ flex:1}}>
                           <TextInput
                             style={styles.textInput}
+                            onChangeText={(text) => this.setState({line_id_state:text})}
                           />
                         </View>
                   </View>
@@ -354,6 +288,7 @@ export default class FloatingButtonScreen extends Component {
                         <View style={{ flex:1}}>
                           <TextInput
                             style={styles.textInput}
+                            onChangeText={(text) => this.setState({facebook_id_state:text})}
                           />
                         </View>
                   </View>
@@ -361,13 +296,13 @@ export default class FloatingButtonScreen extends Component {
                       <Text style={styles.textHeader}>Province</Text>
                       <View style={{ flex:1, borderWidth:1, borderColor:'#dfe6e9', margin:5, borderRadius:5}}>
                         <Picker
-                          selectedValue={this.state.language}
+                          selectedValue={this.state.province_state == ''? 'กระบี่': this.state.province_state}
                           style={{flex:1}}
                           onValueChange={(itemValue, itemIndex) =>
-                            this.setState({language: itemValue})
+                            this.setState({province_state: itemValue})
                           }>
-                            { province_th.map((value) => {
-                                return <Picker.Item label={value} value={value}/>
+                            { this.state.get_province.map((value) => {
+                                return <Picker.Item label={value.name} value={value.id}/>
                               }) 
                             }
                         </Picker>
@@ -378,11 +313,11 @@ export default class FloatingButtonScreen extends Component {
                       <TextInput
                         style={styles.textInput}
                         editable={false}
-                        // value={}
+                        value={this.state.latitude_state+','+this.state.longitude_state}
                       />
                   </View>
                   <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:20}}>
-                    <TouchableOpacity style={styles.buttonSuccess} activeOpacity={0.5}>
+                    <TouchableOpacity style={styles.buttonSuccess} activeOpacity={0.5} onPress={ this.fetchAPIAdd_shop }>
                       <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight'}}>บันทึก</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonCancel} activeOpacity={0.5} onPress={ () => this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})}>
@@ -400,13 +335,13 @@ export default class FloatingButtonScreen extends Component {
                     <Icon name="facebook" style={styles.actionButtonIcon} color={this.state.statusUserLogin?'#4267B2':'gray'}/>
                 </ActionButton.Item>
                 <ActionButton.Item buttonColor='rgb(255, 255, 255)' 
-                  onPress={ () => this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})}
+                  onPress={ () => this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}
                   >
                     <Icon name="search-location" style={styles.actionButtonIcon} color='#2ecc71' />
                 </ActionButton.Item>
                 <ActionButton.Item buttonColor='rgb(255, 255, 255)'
-                   onPress={() => { this.state.statusUserLogin ? this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch}): 
-                   Alert.alert('คำเตือน','คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อนใช้งานฟังก์ชัน',
+                   onPress={() => { this.state.statusUserLogin ? this.fetchApiForInputForm() : 
+                   Alert.alert('คำเตือน','คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อใช้งานฟังก์ชัน',
                     [
                       {
                         text:"ยกเลิก",
@@ -427,8 +362,73 @@ export default class FloatingButtonScreen extends Component {
     );
   }
 
-  firstLogin = () => {
-    
+  fetchAPIAdd_shop = () => {
+    console.log('fetchAPIAdd_shop success')
+    if(this.state.shop_name_state == ''){
+      alert('กรุณาใส่ชื่อร้าน')
+    } else {
+      fetch('http://sharing.greenmile.co.th/api/add_shop',{
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name:this.state.shop_name_state,
+              description:this.state.description_state,
+              phonenumber:this.state.phonenumber_state,
+              line_id:this.state.line_id_state,
+              user_facebook_id:this.state.userID,
+              category_id:this.state.category_state,
+              province_id:this.state.province_state,
+              latitude:this.state.latitude_state,
+              longitude:this.state.longitude_state,
+              facebook_id:this.state.facebook_id_state,
+            }),
+        })
+        .then((response) => response.json())
+        .then((json) => {
+          console.log('response', json.data)
+          this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
+        })
+        .catch((error) => {
+          console.error('Fetch API error in add_shop', error);
+        });
+      }
+  }
+
+  fetchApiForInputForm ()  {
+    this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
+    this.fetchAPIGet_category()
+    this.fetchAPIGet_province()
+  }
+
+  fetchAPIGet_category = () => {
+    console.log('***************fetchAPIGet_category************')
+    if(this.state.category_state == '') {
+      fetch('http://sharing.greenmile.co.th/api/get_category')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({get_categorial:json.data})
+      })
+      .catch((error) => {
+        console.error('Error in fetchAPIGet_category: ',error);
+      });
+    }
+  }
+
+  fetchAPIGet_province() {
+    console.log('***************fetchAPIGet_province************')
+    if(this.state.province_state == '') {
+      fetch('http://sharing.greenmile.co.th/api/get_province')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({get_province:json.data})
+      })
+      .catch((error) => {
+        console.error('Error in fetchAPIGet_province: ',error);
+      });
+    }
   }
 }
 // 

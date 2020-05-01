@@ -6,6 +6,30 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import FromInput from './Forminput'
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
+
+var arraytest = [
+  {
+    name:'ต๋องไง',
+    location:{
+      latitude:37.421998333333,
+      longitude:-122.084
+    }
+  },
+  {
+    name:'ต๋องจ๋า',
+    location:{
+      latitude:37.41733778570779,
+      longitude:-122.06795454025267
+    }
+  },
+  {
+    name:'ทุกอย่าง 20',
+    location:{
+      latitude:37.418160074287115,
+      longitude:-122.09267444908618
+    }
+  }
+]
 export default class Mapview extends Component {
   constructor(props) {
     super(props);
@@ -14,6 +38,7 @@ export default class Mapview extends Component {
       lng:null,
       coor:null,
       markers: [],
+      dataFromApi:[],
       isModalVisible: false,
     };
   }
@@ -27,11 +52,15 @@ export default class Mapview extends Component {
         coor:position.coords
       })
       // console.log('coords', position)
+      this.props.handleResponse(this.state.lat, this.state.lng)
     }, (err) => {
       // console.log('error:', err)
     },
     { enableHighAccuracy: true, timeout: 20000 , maximumAge: 2000,})
+    this.fetchAPIGet_Shop()
   }
+
+
 
   randomColor() {
     return `#${Math.floor(Math.random() * 16777215)
@@ -48,11 +77,16 @@ export default class Mapview extends Component {
         },
       ],
     });
+    console.log('marker: ', ...this.state.markers)
   }
 
   render() {
-    console.log('-------------------')
-    // console.log('Marker', this.state.lng)
+    console.log('--------------------')
+    console.log('lng:', this.state.lng)
+    console.log('lat:', this.state.lat)
+    console.log('lssssss:', this.state.markers)
+    console.log('dataFromApi:', this.state.dataFromApi)
+    console.log('arraytest:', arraytest)
     return (
       <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
         <MapView 
@@ -68,13 +102,14 @@ export default class Mapview extends Component {
                           longitudeDelta: 0.0421}}
         >
         {
-          this.state.markers != null && this.state.markers.map((marker, index) => (
+          arraytest != null && arraytest.map((marker, index) => (
+            console.log('xxdddddd', marker.coordinate),
             <MapView.Marker
                 key = {index}
-                coordinate={marker.coordinate}
-                title={marker.title}
+                coordinate={marker.location}
+                title={marker.name}
                 description={marker.des}
-                onMapPress
+                // onMapPress
             >
               <MapView.Callout onPress={() => {this.setState({isModalVisible: !this.state.isModalVisible})}} />
             </MapView.Marker>
@@ -113,6 +148,19 @@ export default class Mapview extends Component {
           </Modal>
       </View>
     );
+  }
+
+  fetchAPIGet_Shop() {
+    console.log('***************fetchAPIGet_category************')
+      fetch('http://sharing.greenmile.co.th/api/get_shop')
+      .then((response) => response.json())
+      .then((json) => {
+        console.log('Map response: ', json)
+        this.setState({dataFromApi:json.data})
+      })
+      .catch((error) => {
+        console.error('Error in fetchAPIGet_category: ',error);
+      });
   }
 }
 
