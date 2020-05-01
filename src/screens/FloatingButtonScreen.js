@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Alert, View, Text, StyleSheet, Button, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity} from 'react-native';
+import { Alert, View, Text, StyleSheet, Button, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity, AppRegistry} from 'react-native';
 import ActionButton from 'react-native-action-button';
 // import { Icon } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -136,9 +136,7 @@ export default class FloatingButtonScreen extends Component {
       this.setState({ profile_pic: result.picture.data.url, user_name: result.name });
       user_name_face = result.name
       pic_url_face = result.picture.data.url
-      // this.firstLogin.bind(this)
       this.firstUserLogin()
-      // this.setValue(token, userID, result.name, result.picture.data.url)
     }
   };
 
@@ -236,6 +234,7 @@ export default class FloatingButtonScreen extends Component {
     // console.log('userID: ', this.state.userID)
     // console.log('user_name: ', this.state.user_name)
     // console.log('get_categorial: ', this.state.get_categorial)
+    var result
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
@@ -251,7 +250,7 @@ export default class FloatingButtonScreen extends Component {
             >
               <View style={{flex:1, backgroundColor:'white', marginLeft:30, marginRight:30, marginTop:height*0.3, marginBottom:height*0.3, borderRadius:5,}}>
                   <View style={{flexDirection:'row', marginLeft:30, marginRight:30, marginTop:20, borderWidth:1, borderColor:'gray', marginBottom:10, borderRadius:5}}>
-                      <Text style={{fontFamily:'Kanit-Thin' , fontSize:20, padding:10}}>Province |</Text>
+                      <Text style={{fontFamily:'Kanit-ExtraLight' , fontSize:20, padding:10}}>Province |</Text>
                       <View style={{flex:1}}>
                           <Picker
                           selectedValue={this.state.language}
@@ -267,7 +266,7 @@ export default class FloatingButtonScreen extends Component {
                       </View>
                   </View>
                   <View style={{flexDirection:'row',  marginLeft:30, marginRight:30, borderWidth:1, borderColor:'gray',borderRadius:5}}>
-                      <Text style={{fontFamily:'Kanit-Thin', fontSize:20, padding:10}}>Categories |</Text>
+                      <Text style={{fontFamily:'Kanit-ExtraLight', fontSize:20, padding:10}}>Categories |</Text>
                       <View style={{flex:1}}>
                           <Picker
                           selectedValue={this.state.language}
@@ -283,15 +282,16 @@ export default class FloatingButtonScreen extends Component {
                       </View>
                   </View>
                 <TouchableOpacity 
-                style={{flexDirection:'row', backgroundColor:'#78e08f', justifyContent:'center', alignItems:'center', marginLeft:width*0.25, marginRight:width*0.25, borderRadius:5, marginTop:height*0.025}}
-                activeOpacity={0.5} 
-                onPress={() => { {this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}}}>
-                  <Icon name={'search'}></Icon>
-                    <Text style={{fontSize:20, fontFamily:'Kanit-Thin', padding:5}}>ค้นหา</Text>
+                  style={{flexDirection:'row', backgroundColor:'#78e08f', justifyContent:'center', alignItems:'center', marginLeft:width*0.25, marginRight:width*0.25, borderRadius:5, marginTop:height*0.025}}
+                  activeOpacity={0.5} 
+                  onPress={() => { {this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}}}>
+                    <Icon name={'search'}></Icon>
+                      <Text style={{fontSize:20, fontFamily:'Kanit-ExtraLight', padding:5}}>ค้นหา</Text>
                 </TouchableOpacity>
               </View>
             </Modal>
             {/* <------------------------------------------------------------------- Modal form input -------------------------------------------------------------- */} 
+            { this.state.statusUserLogin ? 
             <Modal
               animationType="fade"
               transparent={true}
@@ -394,6 +394,20 @@ export default class FloatingButtonScreen extends Component {
             </ScrollView>
             </View>
             </Modal>
+            : Alert.alert(
+              'คำเตือน',
+              'คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อนใช้งานฟังก์ชัน',
+              [
+                {
+                  text:"ยกเลิก",
+                  style:'cancel'
+                },
+                {
+                  text:"ยืนยัน",
+                  onPress: this.fbAuthen
+                }
+              ]
+            )}
             {/* <------------------------------------------------------------------- end modal form input -------------------------------------------------------------- */} 
 
             <ActionButton buttonColor="rgb(120, 224, 143)">
