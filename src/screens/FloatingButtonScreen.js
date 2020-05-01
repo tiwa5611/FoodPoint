@@ -229,7 +229,7 @@ export default class FloatingButtonScreen extends Component {
   }
 
   render() {
-    // console.log('Status user in system: ', this.state.statusUserLogin)
+    console.log('Status user in system: ', this.state.statusUserLogin)
     // console.log('token: ', this.state.token)
     // console.log('userID: ', this.state.userID)
     // console.log('user_name: ', this.state.user_name)
@@ -291,7 +291,6 @@ export default class FloatingButtonScreen extends Component {
               </View>
             </Modal>
             {/* <------------------------------------------------------------------- Modal form input -------------------------------------------------------------- */} 
-            { this.state.statusUserLogin ? 
             <Modal
               animationType="fade"
               transparent={true}
@@ -394,31 +393,34 @@ export default class FloatingButtonScreen extends Component {
             </ScrollView>
             </View>
             </Modal>
-            : Alert.alert(
-              'คำเตือน',
-              'คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อนใช้งานฟังก์ชัน',
-              [
-                {
-                  text:"ยกเลิก",
-                  style:'cancel'
-                },
-                {
-                  text:"ยืนยัน",
-                  onPress: this.fbAuthen
-                }
-              ]
-            )}
             {/* <------------------------------------------------------------------- end modal form input -------------------------------------------------------------- */} 
-
+            
             <ActionButton buttonColor="rgb(120, 224, 143)">
                 <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={ this.state.statusUserLogin? this.logOut : this.fbAuthen}>
                     <Icon name="facebook" style={styles.actionButtonIcon} color={this.state.statusUserLogin?'#4267B2':'gray'}/>
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={() => {{this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}}}>
+                <ActionButton.Item buttonColor='rgb(255, 255, 255)' 
+                  onPress={ () => this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})}
+                  >
                     <Icon name="search-location" style={styles.actionButtonIcon} color='#2ecc71' />
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={ () => this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})}>
-                    <Icon name="map-marker-alt"  style={styles.actionButtonIcon} color='#e74c3c' />
+                <ActionButton.Item buttonColor='rgb(255, 255, 255)'
+                   onPress={() => { this.state.statusUserLogin ? this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch}): 
+                   Alert.alert('คำเตือน','คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อนใช้งานฟังก์ชัน',
+                    [
+                      {
+                        text:"ยกเลิก",
+                        style:'cancel'
+                      },
+                      {
+                        text:"ยืนยัน",
+                        onPress: this.fbAuthen
+                      }
+                    ]
+                   )}
+                  }
+                >
+                    <Icon name="map-marker-alt"  style={styles.actionButtonIcon} color='#e74c3c'/>
                 </ActionButton.Item>
             </ActionButton>
         </View>

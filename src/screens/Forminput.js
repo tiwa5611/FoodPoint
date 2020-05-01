@@ -11,12 +11,33 @@ export default class Forminput extends Component {
   }
 
 
-  render() {
-    
-    console.log('language:', this.state.language)
-    // return ();
+  componentDidMount() {
+
   }
+
+
+
+
+  render() {
+
+    // return (
+
+    // );
+  }
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
 
 const styles = StyleSheet.create({
     
