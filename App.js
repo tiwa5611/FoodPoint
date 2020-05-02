@@ -45,7 +45,7 @@ function MyStack() {
                   }}
                 />
       <Stack.Screen style={{fontFamily:'Kanit-Light' }} name="กรอกข้อมูล" component={Forminput}/>
-      <Stack.Screen style={{fontFamily:'Kanit-Light' }} name="ลงทะเบียน" component={Register} options={{headerTitleAlign:"center", headerLeft: null}}/>
+      <Stack.Screen style={{fontFamily:'Kanit-Light' }} name="ลงทะเบียน" component={Register} options={{headerLeft: null}}/>
     </Stack.Navigator>
   );
 }

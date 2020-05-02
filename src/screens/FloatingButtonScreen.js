@@ -39,13 +39,7 @@ export default class FloatingButtonScreen extends Component {
       longitude_state:'',
     };
     this.handleLatLong = this.handleLatLong.bind(this)
-  }
-
-  handleLatLong (lat, lng) {
-    this.setState({
-      latitude_state:lat,
-      longitude_state:lng
-    })
+    this.handleMarkPoint = this.handleMarkPoint.bind(this)
   }
 
   async componentDidMount () {
@@ -60,10 +54,30 @@ export default class FloatingButtonScreen extends Component {
       }catch(err){
         console.error('Error:', err)
       }
-      // this.fetchAPIGet_category()
+  }
+
+  handleMarkPoint(visibleModal, lat, lng) {
+    console.log('visibleModal', visibleModal)
+    console.log('lat', lat)
+    console.log('lng', lng)
+    this.fetchAPIGet_category()
+    this.fetchAPIGet_province()
+    this.setState({
+      isModalVisibleInput:visibleModal, 
+      latitude_state:lat, 
+      longitude_state:lng
+    })
+  }
+
+  handleLatLong (lat, lng) {
+    this.setState({
+      latitude_state:lat,
+      longitude_state:lng
+    })
   }
 
   get_Response_Info = (error, result) => {
+    console.log('get_Response_Info')
     if (error) {
       //Alert for the Error
       Alert.alert('Error fetching data: ' + error.toString());
@@ -76,6 +90,7 @@ export default class FloatingButtonScreen extends Component {
   };
 
   firstUserLogin() {
+    console.log('firstUserLogin')
     console.log('http://sharing.greenmile.co.th/api/profile/'+this.state.userID)
     let url = 'http://sharing.greenmile.co.th/api/profile/'+this.state.userID
     fetch(url)
@@ -96,31 +111,29 @@ export default class FloatingButtonScreen extends Component {
   }
   // 
   fbAuthen = () => {
-    LoginManager.logInWithPermissions(["public_profile"]).then(
-      (result) => {
-        if (result.isCancelled) {
-          console.log("Login cancelled");
-        } else {
-          console.log('fbAuthen2')
-          var toKen
-          var userId
-          AccessToken.getCurrentAccessToken().then((data) => {
-            toKen = data.accessToken.toString()
-            userId = data.userID.toString()
-            this.setState({token:toKen, userID:userId, statusUserLogin:true})
-            this.setValue(toKen, userId)
-            const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null,this.get_Response_Info);
-            new GraphRequestManager().addRequest(infoRequest).start();
-          })
-        }
-      },
-      (error) => {
-        console.log("Login fail with error: " + error);
+  LoginManager.logInWithPermissions(["public_profile"]).then(
+    (result) => {
+      if (result.isCancelled) {
+        console.log("Login cancelled");
+      } else {
+        console.log('fbAuthen2')
+        var toKen
+        var userId
+        AccessToken.getCurrentAccessToken().then((data) => {
+          toKen = data.accessToken.toString()
+          userId = data.userID.toString()
+          this.setState({token:toKen, userID:userId, statusUserLogin:true})
+          this.setValue(toKen, userId)
+          const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null,this.get_Response_Info);
+          new GraphRequestManager().addRequest(infoRequest).start();
+        })
       }
-    );
-  }
-
-
+    },
+    (error) => {
+      console.log("Login fail with error: " + error);
+    }
+  );
+}
 
   async setValue(toKen, userID) {
     await AsyncStorage.setItem('token',toKen)
@@ -153,7 +166,7 @@ export default class FloatingButtonScreen extends Component {
   }
 
   render() {
-    // console.log('Status user in system: ',this.state.statusUserLogin)
+    // console.log('Status user in parent: ',this.state.statusUserLogin)
     // console.log('name : ',this.state.shop_name_state)
     // console.log('description: ',this.state.description_state)
     // console.log('phonenumber: ',this.state.phonenumber_state)
@@ -168,7 +181,12 @@ export default class FloatingButtonScreen extends Component {
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
-            <Map handleResponse={this.handleLatLong}/>
+            <Map 
+              handleResponse={this.handleLatLong} 
+              handleUser={this.state.statusUserLogin}
+              haddleManageLoginUser={this.fbAuthen}
+              hadlePoint={this.handleMarkPoint}
+            />
             {/* <------------------------------------------------------------------- Modal form Search -------------------------------------------------------------- */}
             <Modal
               animationType="fade"
@@ -398,9 +416,9 @@ export default class FloatingButtonScreen extends Component {
   }
 
   fetchApiForInputForm ()  {
-    this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
     this.fetchAPIGet_category()
     this.fetchAPIGet_province()
+    this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
   }
 
   fetchAPIGet_category = () => {
