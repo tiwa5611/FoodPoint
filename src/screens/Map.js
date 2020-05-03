@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, Modal, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import MapView, {PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, CalloutSubview } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import FromInput from './Forminput'
+import mapStyle from '../json/mapStyle.json'
+import AwesomeAlert  from 'react-native-awesome-alerts';
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
@@ -78,6 +79,7 @@ var arraytest = [
     }
   }
 ]
+
 export default class Mapview extends Component {
   constructor(props) {
     super(props);
@@ -88,6 +90,7 @@ export default class Mapview extends Component {
       markers: [],
       dataFromApi:[],
       isModalVisible: false,
+      isVisibleAlert:false,
       statusUser:false,
       //------------------------ state detail -------------------
       id_detail:'',
@@ -124,22 +127,35 @@ export default class Mapview extends Component {
       if(this.props.handleUser){
         this.props.hadlePoint(true, e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
     } else {
-      Alert.alert(
-        'คำเตือน',
-        'คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อใช้งานฟังก์ชัน',
-        [
-          {
-            text:"ยกเลิก",
-            style:'cancel'
-          },
-          {
-            text:"ยืนยัน",
-            onPress: this.props.haddleManageLoginUser 
-          }
-        ]
-      )
+      // Alert.alert(
+      //   'คำเตือน',
+      //   'คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อใช้งานฟังก์ชัน',
+      //   [
+      //     {
+      //       text:"ยกเลิก",
+      //       style:'cancel'
+      //     },
+      //     {
+      //       text:"ยืนยัน",
+      //       onPress: this.props.haddleManageLoginUser 
+      //     }
+      //   ]
+      // )
+      this.showAlert()
     }
   }
+
+  showAlert() {
+    this.setState({
+      isVisibleAlert:!this.state.isVisibleAlert
+    });
+  };
+
+  hindAlert() {
+    this.setState({
+      isVisibleAlert:!this.state.isVisibleAlert
+    });
+  };
 
   render() {
     // console.log('lng:', this.state.lng)
@@ -152,13 +168,17 @@ export default class Mapview extends Component {
           ref="map" 
           mapType="terrain" 
           style={styles.map} 
+          provider={PROVIDER_GOOGLE}
           onLongPress={e => this.onMapPress(e)}
           showsUserLocation={true}
-          showsMyLocationButton={true}
-          initialRegion={{latitude: this.state.lat == null ? 37.419499: this.state.lat,
+          // showsMyLocationButton={true}
+          region={{latitude: this.state.lat == null ? 37.419499: this.state.lat,
                           longitude:this.state.lng == null ? -122.080525: this.state.lng,
                           latitudeDelta: 0.0922, 
-                          longitudeDelta: 0.0421}}
+                          longitudeDelta: 0.0421
+                        }}
+          // initialRegion
+          customMapStyle={mapStyle}
         >
         {
           arraytest != null && arraytest.map((marker, index) => (
@@ -167,9 +187,14 @@ export default class Mapview extends Component {
                 coordinate={marker.location}
                 title={marker.name}
                 description={marker.des}
+                // pinColor={marker.color}  color of marker
                 onMapPress
             >
-              <MapView.Callout onPress={() => {this.modalDetailPoint(marker.id)}} />
+              <MapView.Callout onPress={() => {this.modalDetailPoint(marker.id)}} >
+                <View style={{flex:1, borderRadius:40, padding:10}}>
+                  <Text>{marker.name}</Text>
+                </View>
+              </MapView.Callout>
             </MapView.Marker>
           ))
         }
@@ -220,8 +245,31 @@ export default class Mapview extends Component {
                 </View>
             </ScrollView>
           </Modal>
+          <AwesomeAlert
+            show={this.state.isVisibleAlert}
+            showProgress={false}
+            title="คำเตือน"
+            message="คุณต้องล๊อกอินเข้าสู่ระบบเพื่อเปิดใช้งานฟังก์ชั่น"
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={true}
+            showCancelButton={true}
+            showConfirmButton={true}
+            cancelText="ยกเลิก"
+            confirmText="ยืนยัน"
+            confirmButtonColor="#01a69f"
+            onCancelPressed={() => {
+              this.setState({isVisibleAlert:!this.state.isVisibleAlert})
+            }}
+            onConfirmPressed={()=> {this.confirmLogin}}
+          />
       </View>
     );
+  }
+
+  confirmLogin() {
+    this.props.haddleManageLoginUser
+    // console.log('props', this.props)
+    this.setState({isVisibleAlert:!this.state.isVisibleAlert})
   }
 
   modalDeletePoint() {

@@ -3,8 +3,6 @@ import { Alert, View, Text, StyleSheet, TextInput, Modal, Dimensions, AsyncStora
 import ActionButton from 'react-native-action-button';
 // import { Icon } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Register from '../screens/Register'
-import FromInput from './Forminput';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager}from 'react-native-fbsdk';
 import Map from './Map';
 const width = Dimensions.get('window').width
@@ -19,6 +17,7 @@ export default class FloatingButtonScreen extends Component {
     this.state = {
       isModalVisibleInput:false,
       isModalVisibleSearch:false,
+      statusUserLoginProfile:false,
       statusUserLogin:false,
       //-------------------------- variable facebook ----------------------------
       token:'',
@@ -44,16 +43,16 @@ export default class FloatingButtonScreen extends Component {
 
   async componentDidMount () {
     var token = await AsyncStorage.getItem('token')
-      try{
-        if (token !== null ) { 
-          this.setState({token:token, userID:await AsyncStorage.getItem('userID'), 
-                        user_name:await AsyncStorage.getItem('name'), 
-                        pic_url:await AsyncStorage.getItem('pic_url'), 
-                        statusUserLogin:true})
-        }
-      }catch(err){
-        console.error('Error:', err)
+    try{
+      if (token !== null ) { 
+        this.setState({token:token, userID:await AsyncStorage.getItem('userID'), 
+                      user_name:await AsyncStorage.getItem('name'), 
+                      pic_url:await AsyncStorage.getItem('pic_url'), 
+                      statusUserLogin:true})
       }
+    }catch(err){
+      console.error('Error:', err)
+    }
   }
 
   handleMarkPoint(visibleModal, lat, lng) {
@@ -96,13 +95,15 @@ export default class FloatingButtonScreen extends Component {
     fetch(url)
     .then((response) => response.json())
     .then((json) => {
-      console.log('data:', json.data)
       if( json.data == 'not found' ) {
+        this.setState({statusUserLoginProfile:true})
         this.props.navigation.navigate('ลงทะเบียน', { data:{
           username:user_name_face,
           imageProfile:pic_url_face,
           user_id:this.state.userID
         }})
+      } else {
+        this.setState({statusUserLoginProfile:false})
       }
     })
     .catch((error) => {
@@ -111,6 +112,7 @@ export default class FloatingButtonScreen extends Component {
   }
   // 
   fbAuthen = () => {
+  console.log('xxxxx')
   LoginManager.logInWithPermissions(["public_profile"]).then(
     (result) => {
       if (result.isCancelled) {
@@ -165,26 +167,18 @@ export default class FloatingButtonScreen extends Component {
     )
   }
 
+  test () {
+    console.log('xxxxtget')
+  }
+
   render() {
-    // console.log('Status user in parent: ',this.state.statusUserLogin)
-    // console.log('name : ',this.state.shop_name_state)
-    // console.log('description: ',this.state.description_state)
-    // console.log('phonenumber: ',this.state.phonenumber_state)
-    // console.log('line_id :',this.state.line_id_state)
-    // console.log('user_facebook_id:',this.state.userID)
-    // console.log('category:',this.state.category_state)
-    // console.log('province:',this.state.province_state)
-    // console.log('location:',this.state.latitude_state+' , '+this.state.longitude_state)
-    // console.log('facebook_id:',this.state.facebook_id_state)
-    // console.log('user_name: ', this.state.user_name)
-    // console.log('get_categorial: ', this.state.get_categorial)
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
             <Map 
               handleResponse={this.handleLatLong} 
               handleUser={this.state.statusUserLogin}
-              haddleManageLoginUser={this.fbAuthen}
+              haddleManageLoginUser={this.test}
               hadlePoint={this.handleMarkPoint}
               handleFacebookId={this.state.userID}
             />
@@ -207,10 +201,10 @@ export default class FloatingButtonScreen extends Component {
                         onValueChange={(itemValue, itemIndex) =>
                           this.setState({language: itemValue})
                         }>
-                          <Picker.Item label="เลือกจังหวัด"/>
-                          <Picker.Item label="JavaScript1" value="js1" />
-                          <Picker.Item label="JavaScript2" value="js2" />
-                          <Picker.Item label="JavaScript3" value="js3" />
+                          { this.state.get_province.map((value) => {
+                              return <Picker.Item label={value.name} value={value.id}/>
+                            })  
+                          }
                       </Picker>
                     </View>
                 </View>
@@ -223,10 +217,10 @@ export default class FloatingButtonScreen extends Component {
                         onValueChange={(itemValue, itemIndex) =>
                           this.setState({language: itemValue})
                         }>
-                          
-                          <Picker.Item label="JavaScript1" value="js1" />
-                          <Picker.Item label="JavaScript2" value="js2" />
-                          <Picker.Item label="JavaScript3" value="js3" />
+                          { this.state.get_categorial !== null && this.state.get_categorial.map((value) => {
+                              return <Picker.Item label={value.name} value={value.id} />
+                            })
+                          }
                       </Picker>
                     </View>
                 </View>
@@ -288,7 +282,7 @@ export default class FloatingButtonScreen extends Component {
                   <View>
                       <Text style={styles.textHeader}>รายละเอียดสินค้า</Text>
                       <TextInput
-                        style={{height:height*0.13, borderWidth:2, borderRadius:4, borderColor:'#dfe6e9'}}
+                        style={{height:height*0.13, borderWidth:2, borderRadius:4, borderColor:'#dfe6e9', textAlignVertical: 'top'}}
                         multiline
                         numberOfLines={4}
                         onChangeText={(text) => this.setState({description_state:text})}
@@ -360,17 +354,16 @@ export default class FloatingButtonScreen extends Component {
             </View>
             </Modal>
             {/* <------------------------------------------------------------------- end modal form input -------------------------------------------------------------- */} 
-            
-            <ActionButton buttonColor="rgb(120, 224, 143)">
-                <ActionButton.Item buttonColor='rgb(255, 255, 255)' onPress={ this.state.statusUserLogin? this.logOut : this.fbAuthen}>
-                    <Icon name="facebook" style={styles.actionButtonIcon} color={this.state.statusUserLogin?'#4267B2':'gray'}/>
+            <ActionButton buttonColor="#01a69f">
+                <ActionButton.Item buttonColor={'#4267B2'} onPress={ this.state.statusUserLogin? this.logOut : this.fbAuthen}>
+                    <Icon name={this.state.statusUserLogin? "sign-out-alt" : "facebook-f"} style={styles.actionButtonIcon} color={'#ffffff'}/>
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='rgb(255, 255, 255)' 
+                <ActionButton.Item buttonColor='#00cec9' 
                   onPress={ () => this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}
                   >
-                    <Icon name="search-location" style={styles.actionButtonIcon} color='#2ecc71' />
+                    <Icon name="search-location" style={styles.actionButtonIcon} color='#ffffff' />
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='rgb(255, 255, 255)'
+                <ActionButton.Item buttonColor='#e84118'
                    onPress={() => { this.state.statusUserLogin ? this.fetchApiForInputForm() : 
                    Alert.alert('คำเตือน','คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อใช้งานฟังก์ชัน',
                     [
@@ -386,11 +379,15 @@ export default class FloatingButtonScreen extends Component {
                    )}
                   }
                 >
-                    <Icon name="map-marker-alt"  style={styles.actionButtonIcon} color='#e74c3c'/>
+                    <Icon name="map-marked-alt"  style={styles.actionButtonIcon} color='#ffffff'/>
                 </ActionButton.Item>
             </ActionButton>
         </View>
     );
+  }
+
+  test = () => {
+    console.log('xxxxx')
   }
 
   fetchAPIAdd_shop = () => {
@@ -399,33 +396,33 @@ export default class FloatingButtonScreen extends Component {
       alert('กรุณาใส่ชื่อร้าน')
     } else {
       fetch('http://sharing.greenmile.co.th/api/add_shop',{
-          method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              name:this.state.shop_name_state,
-              description:this.state.description_state,
-              phonenumber:this.state.phonenumber_state,
-              line_id:this.state.line_id_state,
-              user_facebook_id:this.state.userID,
-              category_id:this.state.category_state,
-              province_id:this.state.province_state,
-              latitude:this.state.latitude_state,
-              longitude:this.state.longitude_state,
-              facebook_id:this.state.facebook_id_state,
-            }),
-        })
-        .then((response) => response.json())
-        .then((json) => {
-          console.log('response', json.data)
-          this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
-        })
-        .catch((error) => {
-          console.error('Fetch API error in add_shop', error);
-        });
-      }
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name:this.state.shop_name_state,
+            description:this.state.description_state,
+            phonenumber:this.state.phonenumber_state,
+            line_id:this.state.line_id_state,
+            user_facebook_id:this.state.userID,
+            category_id:this.state.category_state,
+            province_id:this.state.province_state,
+            latitude:this.state.latitude_state,
+            longitude:this.state.longitude_state,
+            facebook_id:this.state.facebook_id_state,
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log('response', json.data)
+        this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
+      })
+      .catch((error) => {
+        console.error('Fetch API error in add_shop', error);
+      });
+    }
   }
 
   fetchApiForInputForm ()  {
@@ -466,7 +463,7 @@ export default class FloatingButtonScreen extends Component {
 
 const styles = StyleSheet.create({
     actionButtonIcon: {
-      fontSize: 20,
+      fontSize: 22,
       height: 22,
     },
     modalView:{
