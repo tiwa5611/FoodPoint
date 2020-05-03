@@ -90,6 +90,7 @@ export default class Mapview extends Component {
       isModalVisible: false,
       statusUser:false,
       //------------------------ state detail -------------------
+      id_detail:'',
       name_detail:'',
       des_detail:'',
       phon_detail:'',
@@ -210,7 +211,8 @@ export default class Mapview extends Component {
                       </TouchableOpacity>
                     </View>
                     <View style={styles.stylebuutonInModal}>
-                      <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#ff7675', borderRadius:5}} activeOpacity={0.5} onPress={ () => {} }>
+                      <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#ff7675', borderRadius:5}} activeOpacity={0.5} 
+                        onPress={ this.modalDeletePoint.bind(this) }>
                         <Icon name={'trash-alt'} size={20}  color={'#ffffff'}/>
                         <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>ลบ</Text>
                       </TouchableOpacity>
@@ -222,6 +224,30 @@ export default class Mapview extends Component {
     );
   }
 
+  modalDeletePoint() {
+    console.log('ID: ', this.state.id_detail)
+    console.log('user_facebook_id: ', this.props.handleFacebookId)
+    fetch('http://sharing.greenmile.co.th/api/delete_shop',{
+      method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id:this.state.id_detail,
+          user_facebook_id:this.props.handleFacebookId,
+        }),
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      console.log('response', json.data)
+      this.setState({isModalVisible: !this.state.isModalVisible})
+    })
+    .catch((error) => {
+      console.error('Fetch API error in add_shop', error);
+    });
+  }
+
   modalDetailPoint( id ) {
     console.log('http://sharing.greenmile.co.th/api/get_shop/'+id)
     fetch('http://sharing.greenmile.co.th/api/get_shop/'+id)
@@ -229,6 +255,7 @@ export default class Mapview extends Component {
     .then((json) => {
       console.log('data : ', json.data)
       this.setState({
+        id_detail:json.data.id,
         name_detail:json.data.name,
         des_detail:json.data.description,
         phon_detail:json.data.phonenumber,

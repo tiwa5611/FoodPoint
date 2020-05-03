@@ -186,6 +186,7 @@ export default class FloatingButtonScreen extends Component {
               handleUser={this.state.statusUserLogin}
               haddleManageLoginUser={this.fbAuthen}
               hadlePoint={this.handleMarkPoint}
+              handleFacebookId={this.state.userID}
             />
             {/* <------------------------------------------------------------------- Modal form Search -------------------------------------------------------------- */}
             <Modal
@@ -196,46 +197,58 @@ export default class FloatingButtonScreen extends Component {
                 Alert.alert("Modal has been closed.");
               }}
             >
-              <View style={{flex:1, backgroundColor:'white', marginLeft:30, marginRight:30, marginTop:height*0.3, marginBottom:height*0.3, borderRadius:5,}}>
-                  <View style={{flexDirection:'row', marginLeft:30, marginRight:30, marginTop:20, borderWidth:1, borderColor:'gray', marginBottom:10, borderRadius:5}}>
-                      <Text style={{fontFamily:'Kanit-ExtraLight' , fontSize:20, padding:10}}>Province |</Text>
-                      <View style={{flex:1}}>
-                          <Picker
-                          selectedValue={this.state.language}
-                          style={{flex:1}}
-                          onValueChange={(itemValue, itemIndex) =>
-                            this.setState({language: itemValue})
-                          }>
-                            <Picker.Item label="เลือกจังหวัด"/>
-                            <Picker.Item label="JavaScript1" value="js1" />
-                            <Picker.Item label="JavaScript2" value="js2" />
-                            <Picker.Item label="JavaScript3" value="js3" />
-                        </Picker>
-                      </View>
+            <View style={{flex:1, backgroundColor:'white', marginLeft:30, marginRight:30, marginTop:height*0.3, marginBottom:height*0.3, borderRadius:5,}}>
+                <View style={{flexDirection:'row', marginLeft:30, marginRight:30, marginTop:20, borderWidth:1, borderColor:'gray', marginBottom:10, borderRadius:5}}>
+                    <Text style={{fontFamily:'Kanit-ExtraLight' , fontSize:20, padding:10}}>Province |</Text>
+                    <View style={{flex:1}}>
+                        <Picker
+                        selectedValue={this.state.language}
+                        style={{flex:1}}
+                        onValueChange={(itemValue, itemIndex) =>
+                          this.setState({language: itemValue})
+                        }>
+                          <Picker.Item label="เลือกจังหวัด"/>
+                          <Picker.Item label="JavaScript1" value="js1" />
+                          <Picker.Item label="JavaScript2" value="js2" />
+                          <Picker.Item label="JavaScript3" value="js3" />
+                      </Picker>
+                    </View>
+                </View>
+                <View style={{flexDirection:'row',  marginLeft:30, marginRight:30, borderWidth:1, borderColor:'gray',borderRadius:5}}>
+                    <Text style={{fontFamily:'Kanit-ExtraLight', fontSize:20, padding:10}}>Categories |</Text>
+                    <View style={{flex:1}}>
+                        <Picker
+                        selectedValue={this.state.language}
+                        style={{flex:1}}
+                        onValueChange={(itemValue, itemIndex) =>
+                          this.setState({language: itemValue})
+                        }>
+                          
+                          <Picker.Item label="JavaScript1" value="js1" />
+                          <Picker.Item label="JavaScript2" value="js2" />
+                          <Picker.Item label="JavaScript3" value="js3" />
+                      </Picker>
+                    </View>
+                </View>
+                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:height*0.04}}>
+                  <View style={{marginLeft:5}}>
+                    <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} 
+                   onPress={() =>  { this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch}) }
+                  }
+                    >
+                      <Icon name={'search'} size={20} color={'#ffffff'}/>
+                      <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>ค้นหา</Text>
+                    </TouchableOpacity>
                   </View>
-                  <View style={{flexDirection:'row',  marginLeft:30, marginRight:30, borderWidth:1, borderColor:'gray',borderRadius:5}}>
-                      <Text style={{fontFamily:'Kanit-ExtraLight', fontSize:20, padding:10}}>Categories |</Text>
-                      <View style={{flex:1}}>
-                          <Picker
-                          selectedValue={this.state.language}
-                          style={{flex:1}}
-                          onValueChange={(itemValue, itemIndex) =>
-                            this.setState({language: itemValue})
-                          }>
-                            
-                            <Picker.Item label="JavaScript1" value="js1" />
-                            <Picker.Item label="JavaScript2" value="js2" />
-                            <Picker.Item label="JavaScript3" value="js3" />
-                        </Picker>
-                      </View>
+                  <View style={{marginLeft:5}}>
+                    <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#ff7675', borderRadius:5}} activeOpacity={0.5} 
+                    onPress={() =>  { this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch}) }}
+                    >
+                      <Icon name={'brush'} size={20}  color={'#ffffff'}/>
+                      <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>ล้างข้อมูล</Text>
+                    </TouchableOpacity>
                   </View>
-                <TouchableOpacity 
-                  style={{flexDirection:'row', backgroundColor:'#78e08f', justifyContent:'center', alignItems:'center', marginLeft:width*0.25, marginRight:width*0.25, borderRadius:5, marginTop:height*0.025}}
-                  activeOpacity={0.5} 
-                  onPress={() => { {this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}}}>
-                    <Icon name={'search'}></Icon>
-                      <Text style={{fontSize:20, fontFamily:'Kanit-ExtraLight', padding:5}}>ค้นหา</Text>
-                </TouchableOpacity>
+                </View>
               </View>
             </Modal>
             {/* <------------------------------------------------------------------- Modal form input -------------------------------------------------------------- */} 
