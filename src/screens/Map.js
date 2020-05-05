@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, Modal, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import MapView, {PROVIDER_GOOGLE, CalloutSubview } from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Animated  } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import mapStyle from '../json/mapStyle.json'
@@ -8,6 +8,9 @@ import AlertPro from "react-native-alert-pro";
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
+
+var text_null = 'ไม่มีข้อมูล'
+
 
 var arraytest = [
   {
@@ -331,25 +334,32 @@ export default class Mapview extends Component {
 
   render() {
     console.log('fbAuthen:', this.props.fbAuthen)
-    // console.log('arraytest1', this.state.markers1)
+    // console.log('arraytest1', this.state.markers1)terrain/satellite/standard
     // console.log('this.props:', this.props.handleGetShop)
     return (
       <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
         <MapView 
           ref="map" 
-          mapType="terrain" 
+          mapType="satellite" 
           style={styles.map} 
-          // provider={MapView.PROVIDER_GOOGLE}
+          provider={PROVIDER_GOOGLE}
+          customMapStyle={mapStyle}
           onLongPress={e => this.onMapPress(e)}
           showsUserLocation={true}
-          // showsMyLocationButton={true}
+          showsMyLocationButton={true}
+          showsTraffic={true}
+          showsIndoors={true}
+          showsScale={true}
+          toolbarEnabled={true}
+          followsUserLocation={true}
+          toolbarEnabled={true}
+          loadingBackgroundColor={'#81ecec'}
           region={{latitude: this.state.lat == null ? 37.419499: this.state.lat,
                           longitude:this.state.lng == null ? -122.080525: this.state.lng,
                           latitudeDelta: 0.0922, 
                           longitudeDelta: 0.0421
                         }}
           // initialRegion
-          customMapStyle={mapStyle}
         >
         {
          this.props.handleGetShop != null && this.props.handleGetShop.map((marker, index) => (
@@ -365,7 +375,7 @@ export default class Mapview extends Component {
 
               <MapView.Callout  >
                 <View style={{flex:1, borderRadius:40, padding:10}}>
-                  <Text>{marker.name}</Text>
+                  <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}}>{marker.name}</Text>
 
 
                 </View>
@@ -393,15 +403,15 @@ export default class Mapview extends Component {
                 </View>
                 <View style={styles.viewModalDetail}>
                     <Icon name={'facebook'} style={styles.iconModalDetail} color={'#4267B2'}/>
-                    <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.facebook_detail}</Text>
+                    <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.facebook_detail == null ? text_null : this.state.facebook_detail}</Text>
                 </View>
                 <View style={styles.viewModalDetail}>
                   <Icon name={'line'} style={styles.iconModalDetail} color={'#3ae374'}/>
-                  <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.line_detail}</Text>
+                  <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.line_detail  == null ? text_null : this.state.line_detail}</Text>
                 </View>
                 <View style={styles.viewModalDetail}>
                   <Icon name={'phone'} style={styles.iconModalDetail} color={'gray'}/>
-                  <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.phon_detail}</Text>
+                  <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.phon_detail  == null ? text_null : this.state.phon_detail}</Text>
                 </View>
                 <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                     <View style={styles.stylebuutonInModal}>
@@ -526,9 +536,10 @@ const styles = StyleSheet.create({
     margin:5
   },
   map: {
-    width: width,
-    height: height,
-    // zIndex: -1
+    // width: width,
+    // height: height,
+    // zIndex: -10
+    ...StyleSheet.absoluteFillObject,
   },
   radius: {
     height: 50,
@@ -568,7 +579,7 @@ const styles = StyleSheet.create({
     margin:10,
   },
   iconModalDetail:{
-    fontSize:width*0.09,
+    fontSize:width*0.07,
     marginLeft:15
   }
 });

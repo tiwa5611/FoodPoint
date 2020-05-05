@@ -8,9 +8,9 @@ import Map from './Map';
 import Search from './Search'
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
+
 var user_name_face = ''
 var pic_url_face= ''
-
 
 export default class FloatingButtonScreen extends Component {
   constructor(props) {
@@ -45,11 +45,10 @@ export default class FloatingButtonScreen extends Component {
   }
 
   async componentDidMount () {
-    var token = await AsyncStorage.getItem('token')
+    var user_id = await AsyncStorage.getItem('userID')
     try{
-      if (token !== null ) { 
+      if (user_id !== null ) { 
         this.setState({
-                      token:token, 
                       userID:await AsyncStorage.getItem('userID'), 
                       user_name:await AsyncStorage.getItem('name'), 
                       pic_url:await AsyncStorage.getItem('pic_url'), 
@@ -153,7 +152,7 @@ export default class FloatingButtonScreen extends Component {
           toKen = data.accessToken.toString()
           userId = data.userID.toString()
           this.setState({token:toKen, userID:userId, statusUserLogin:true})
-          this.setValue(toKen, userId)
+          // this.setValue(toKen, userId)
           const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null, this.get_Response_Info);
           new GraphRequestManager().addRequest(infoRequest).start();
         })
@@ -165,12 +164,12 @@ export default class FloatingButtonScreen extends Component {
   );
 }
 
-  async setValue(toKen, userID) {
-    await AsyncStorage.setItem('token',toKen)
-    await AsyncStorage.setItem('userID',userID)
-    await AsyncStorage.setItem('name',user_name_face)
-    await AsyncStorage.setItem('pic_url',pic_url_face)
-  }
+  // async setValue(toKen, userID) {
+  //   await AsyncStorage.setItem('token',toKen)
+  //   await AsyncStorage.setItem('userID',userID)
+  //   await AsyncStorage.setItem('name',user_name_face)
+  //   await AsyncStorage.setItem('pic_url',pic_url_face)
+  // }
 
   logOut = () => {
     Alert.alert(
@@ -328,7 +327,7 @@ export default class FloatingButtonScreen extends Component {
                 <ActionButton.Item buttonColor={'#4267B2'} onPress={ this.state.statusUserLogin? this.logOut : this.fbAuthen}>
                     <Icon name={this.state.statusUserLogin? "sign-out-alt" : "facebook-f"} style={styles.actionButtonIcon} color={'#ffffff'}/>
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='#00cec9' 
+                <ActionButton.Item buttonColor='#05c46b' 
                   onPress={ () => this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}
                   >
                     <Icon name="search-location" style={styles.actionButtonIcon} color='#ffffff' />
@@ -387,7 +386,6 @@ export default class FloatingButtonScreen extends Component {
       .then((response) => response.json())
       .then((json) => {
         console.log('response', json.data)
-        // this.
         this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
         this.fetchApiGetShop()   //Fetch data when user click save button
       })
@@ -482,7 +480,7 @@ const styles = StyleSheet.create({
     marginBottom:10,
   }, 
   buttonSuccess: {
-    backgroundColor:'#2ecc71',
+    backgroundColor:'#01a69f',
     height:50,
     width:80,
     borderRadius:5,
@@ -491,7 +489,7 @@ const styles = StyleSheet.create({
     marginRight:10
   },
   buttonCancel: {
-    backgroundColor:'#e74c3c',
+    backgroundColor:'#CAD3C8',
     height:50,
     width:80,
     borderRadius:5,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const width = Dimensions.get('window').width
@@ -40,17 +40,25 @@ export default class Register extends Component {
             name: this.state.name,
             phonenumber: this.state.phonenumber,
             facebook_id: facebook_id_temp,
-            line_id: this.state.line_id
+            line_id: this.state.line_id,
+            picture:null
           }),
       })
       .then((response) => response.json())
       .then((json) => {
         console.log('response', json.data)
+        this.setValue(facebook_id_temp, this.state.name, this.state.picture)
         this.props.navigation.goBack()
       })
       .catch((error) => {
         console.error('Fetch API error in register page',error);
       });
+  }
+
+  async setValue(userID, name, picture) {
+    await AsyncStorage.setItem('userID',userID)
+    await AsyncStorage.setItem('name',name)
+    await AsyncStorage.setItem('pic_url',picture)
   }
  
   render() {
@@ -66,7 +74,7 @@ export default class Register extends Component {
         <View style={{ flex: 1, backgroundColor:'white'}}>
           <View style={{marginLeft:30, marginRight:30}}>
           <View style={styles.viewImage}>
-              <Image style={styles.imageStyle} source={{uri: data.imageProfile}}></Image>
+              <Image style={styles.imageStyle} source={{uri: this.state.picture == null? this.setState({picture:data.imageProfile}) : data.imageProfile}}></Image>
           </View>
           <View style={styles.viewTextInput}> 
             <View style={{ flex:1}}>
