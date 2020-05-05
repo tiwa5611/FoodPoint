@@ -13,9 +13,6 @@ export default class Search extends Component {
     };
   }
 
-componentDidMount() {
-
-}
 
   render() {
       console.log('props modal search:', this.props)

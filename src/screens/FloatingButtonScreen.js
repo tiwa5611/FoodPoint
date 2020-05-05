@@ -26,6 +26,7 @@ export default class FloatingButtonScreen extends Component {
       user_name:'',
       get_categorial:[],
       get_province:[],
+      get_shop:[],
       //--------------------------- variable for input form ----------------------
       shop_name_state:'',
       description_state:'',
@@ -195,9 +196,9 @@ export default class FloatingButtonScreen extends Component {
             />
             {/* <------------------------------------------------------------------- Modal form Search -------------------------------------------------------------- */}
             <Search
-                      hadleModal={this.state.isModalVisibleSearch}
-                      hadleCallbackModal={this.hadleStateModal}
-                    />
+              hadleModal={this.state.isModalVisibleSearch}
+              hadleCallbackModal={this.hadleStateModal}
+            />
             {/* <------------------------------------------------------------------- Modal form input -------------------------------------------------------------- */} 
             <Modal
               animationType="fade"
@@ -370,6 +371,7 @@ export default class FloatingButtonScreen extends Component {
       .then((response) => response.json())
       .then((json) => {
         console.log('response', json.data)
+        // this.
         this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
       })
       .catch((error) => {
