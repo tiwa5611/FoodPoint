@@ -274,13 +274,7 @@ export default class Mapview extends Component {
     this.state = {
       lat:null,
       lng:null,
-      coor:null,
-      markers:[],
-      markers1:[],
-      dataFromApi:[],
       isModalVisible: false,
-      isVisibleAlert:false,
-      statusUser:false,
       //------------------------ state detail -------------------
       id_detail:'',
       name_detail:'',
@@ -303,7 +297,6 @@ export default class Mapview extends Component {
     },
     { enableHighAccuracy: true, timeout: 20000 , maximumAge: 2000,})
     this.fetchAPIGet_Shop()
-    this.markerMapView()
   }
 //   this.setState({
 //     markers: [ ...this.state.markers,
@@ -337,9 +330,9 @@ export default class Mapview extends Component {
   }
 
   render() {
-    // console.log('lng:', this.state.lng)
+    console.log('fbAuthen:', this.props.fbAuthen)
     // console.log('arraytest1', this.state.markers1)
-    // console.log('arraytest2:', this.state.markers)
+    // console.log('this.props:', this.props.handleGetShop)
     return (
       <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
         <MapView 
@@ -359,7 +352,7 @@ export default class Mapview extends Component {
           customMapStyle={mapStyle}
         >
         {
-         this.state.markers1 != null && this.state.markers1.map((marker, index) => (
+         this.props.handleGetShop != null && this.props.handleGetShop.map((marker, index) => (
             <MapView.Marker
                 key = {index}
                 coordinate={marker.location}
@@ -367,9 +360,10 @@ export default class Mapview extends Component {
                 description={marker.des}
                 // pinColor={'#01a69f'} 
                 onMapPress
+                onPress={() => {this.modalDetailPoint(marker.id)}}
             >
 
-              <MapView.Callout onPress={() => {this.modalDetailPoint(marker.id)}} >
+              <MapView.Callout  >
                 <View style={{flex:1, borderRadius:40, padding:10}}>
                   <Text>{marker.name}</Text>
 
@@ -418,7 +412,7 @@ export default class Mapview extends Component {
                     </View>
                     <View style={styles.stylebuutonInModal}>
                       <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#ff7675', borderRadius:5}} activeOpacity={0.5} 
-                        onPress={ this.modalDeletePoint.bind(this) }>
+                        onPress={ this.modalDeletePoint.bind(this)} >
                         <Icon name={'trash-alt'} size={20}  color={'#ffffff'}/>
                         <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>ลบ</Text>
                       </TouchableOpacity>
@@ -427,53 +421,38 @@ export default class Mapview extends Component {
             </ScrollView>
           </Modal>
           <AlertPro
-          ref={ref => {
-            this.AlertPro = ref;
-          }}
-          onConfirm={ this.props.haddleManageLoginUser }
-          useNativeDriver={true}
-          onCancel={() => this.AlertPro.close()}
-          title="Delete confirmation"
-          transparent={false}
-          message="Are you sure to delete the entry?"
-          textCancel="Cancel"
-          textConfirm="Confirm"
-          customStyles={{
-            mask: {
-              backgroundColor: "transparent"
-            },
-            // container: {
-            //   borderWidth: 1,
-            //   borderColor: "gray",
-            //   shadowColor: "#000000",
-            //   shadowOpacity: 0.1,
-            //   shadowRadius: 10
-            // },
-            buttonCancel: {
-              backgroundColor: "#4da6ff"
-            },
-            buttonConfirm: {
-              backgroundColor: "#ffa31a"
-            }
-          }}
-        />
+            ref={ref => {
+              this.AlertPro = ref;
+            }}
+            onConfirm={ this.props.haddleManageLoginUser }
+            useNativeDriver={true}
+            onCancel={() => this.AlertPro.close()}
+            title="Delete confirmation"
+            transparent={false}
+            message="Are you sure to delete the entry?"
+            textCancel="Cancel"
+            textConfirm="Confirm"
+            customStyles={{
+              mask: {
+                backgroundColor: "transparent"
+              },
+              // container: {
+              //   borderWidth: 1,
+              //   borderColor: "gray",
+              //   shadowColor: "#000000",
+              //   shadowOpacity: 0.1,
+              //   shadowRadius: 10
+              // },
+              buttonCancel: {
+                backgroundColor: "#4da6ff"
+              },
+              buttonConfirm: {
+                backgroundColor: "#ffa31a"
+              }
+            }}
+          />
       </View>
     );
-  }
-
-  markerMapView() {
-    fetch('http://sharing.greenmile.co.th/api/get_shop')
-    .then((response) => response.json())
-    .then((json) => {
-      console.log('data : ', json.data)
-      this.setState({
-        marker:json.data,
-        markers1:json.data
-      })
-    })
-    .catch((error) => {
-      console.error('Error in fetchAPIGet_category: ',error);
-    });
   }
 
   modalDeletePoint() {
@@ -493,11 +472,13 @@ export default class Mapview extends Component {
     .then((response) => response.json())
     .then((json) => {
       console.log('response', json.data)
+      this.props.handleRefetchGetShop(true)
       this.setState({isModalVisible: !this.state.isModalVisible})
     })
     .catch((error) => {
       console.error('Fetch API error in add_shop', error);
     });
+     
   }
 
   modalDetailPoint( id ) {

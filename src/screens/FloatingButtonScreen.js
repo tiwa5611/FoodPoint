@@ -41,6 +41,7 @@ export default class FloatingButtonScreen extends Component {
     this.handleLatLong = this.handleLatLong.bind(this)
     this.handleMarkPoint = this.handleMarkPoint.bind(this)
     this.hadleStateModal = this.hadleStateModal.bind(this)
+    this.handleCallbackDeletePoint = this.handleCallbackDeletePoint.bind(this)
   }
 
   async componentDidMount () {
@@ -54,11 +55,16 @@ export default class FloatingButtonScreen extends Component {
                       pic_url:await AsyncStorage.getItem('pic_url'), 
                       statusUserLogin:true
                     })
+      } else {
+        this.fbAuthen
       }
     }catch(err){
       console.error('Error:', err)
     }
+    this.fetchApiGetShop()
   }
+
+  //------------------------------------------------------ Handle variable between component ------------------------------------------------
 
   handleMarkPoint(visibleModal, lat, lng) {
     console.log('visibleModal', visibleModal)
@@ -78,6 +84,19 @@ export default class FloatingButtonScreen extends Component {
       latitude_state:lat,
       longitude_state:lng
     })
+  }
+
+  hadleStateModal(state) {
+    this.setState({
+      isModalVisibleSearch:state
+    })
+  }
+
+  handleCallbackDeletePoint( bool ) {
+    console.log('function handleCallbackDeletePoint: ', bool)
+    if( bool ) {
+      this.fetchApiGetShop()
+    }
   }
 
   get_Response_Info = (error, result) => {
@@ -176,14 +195,9 @@ export default class FloatingButtonScreen extends Component {
     )
   }
 
-  hadleStateModal(state) {
-    this.setState({
-      isModalVisibleSearch:state
-    })
-  }
 
   render() {
-    console.log('state search modal: ', this.state.isModalVisibleSearch)
+    // console.log('state search modal: ', this.state.isModalVisibleSearch)
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
@@ -193,6 +207,8 @@ export default class FloatingButtonScreen extends Component {
               haddleManageLoginUser={this.fbAuthen}
               hadlePoint={this.handleMarkPoint}
               handleFacebookId={this.state.userID}
+              handleGetShop={this.state.get_shop}
+              handleRefetchGetShop={this.handleCallbackDeletePoint}
             />
             {/* <------------------------------------------------------------------- Modal form Search -------------------------------------------------------------- */}
             <Search
@@ -340,7 +356,7 @@ export default class FloatingButtonScreen extends Component {
         </View>
     );
   }
-
+//------------------------------------------------------ fetch  API -----------------------------------------------------------
   fetchAPIAdd_shop = () => {
     console.log('fetchAPIAdd_shop success')
     console.log(this.state.userID)
@@ -373,11 +389,27 @@ export default class FloatingButtonScreen extends Component {
         console.log('response', json.data)
         // this.
         this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
+        this.fetchApiGetShop()   //Fetch data when user click save button
       })
       .catch((error) => {
         console.error('Fetch API error in add_shop', error);
       });
     }
+  }
+
+  fetchApiGetShop = () => {
+    console.log('markerMapView active')
+    fetch('http://sharing.greenmile.co.th/api/get_shop')
+    .then((response) => response.json())
+    .then((json) => {
+      console.log('data : ', json.data)
+      this.setState({
+        get_shop:json.data,
+      })
+    })
+    .catch((error) => {
+      console.error('Error in fetchAPIGet_shop: ',error);
+    });
   }
 
   fetchApiForInputForm ()  {
