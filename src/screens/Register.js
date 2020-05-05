@@ -21,11 +21,12 @@ export default class Register extends Component {
   }
   
   submitButton() {
-      console.log('student_id', this.state.student_id)
-      console.log('batch', this.state.batch)
-      console.log('name', this.state.name)
-      console.log('phonenumber', this.state.phonenumber)
-      console.log('facebook_id', facebook_id_temp)
+      
+
+      // console.log('batch', this.state.batch)
+      // console.log('name', this.state.name)
+      // console.log('phonenumber', this.state.phonenumber)
+      // console.log('facebook_id', facebook_id_temp)
 
       fetch('http://sharing.greenmile.co.th/api/register',{
         method: 'POST',
@@ -55,8 +56,9 @@ export default class Register extends Component {
   render() {
 
     const { data } = this.props.route.params; 
-    console.log('name', data.username)
-    console.log('pic', data.imageProfile)
+    // const { state } = this.props.navigation.state;
+    // console.log('data', data)
+    // console.log('pic', data.imageProfile)
     console.log('UserID', data.user_id)
     facebook_id_temp = data.user_id
     return (
@@ -70,7 +72,7 @@ export default class Register extends Component {
             <View style={{ flex:1}}>
               {console.log('name in state: ', this.state.name)}
               <TextInput
-                style={{textAlign:'center',borderWidth:2,borderColor:'#dfe6e9',padding:0, borderRadius:5,height:height*0.06,marginBottom:10,}}
+                style={{textAlign:'center',borderWidth:2,borderColor:'#dfe6e9',padding:0, borderRadius:5,height:height*0.06,marginBottom:10, fontFamily:'Kanit-ExtraLight'}}
                 placeholder={data.username}
                 value={this.state.name  == null? this.setState({name:data.username}): this.state.name}
                 onChangeText={(text) => this.setState({name: text})}
@@ -79,7 +81,7 @@ export default class Register extends Component {
           </View>
           <View style={styles.viewTextInput}> 
             <View style={{ flex:1, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-              <Text style={{marginBottom:5, marginRight:5}}>Line ID.</Text>
+              <Text style={{marginBottom:5, marginRight:5, fontFamily:'Kanit-ExtraLight'}}>Line ID.</Text>
               <View style={{flex:1}}>
                 <TextInput
                   style={styles.textInput}
@@ -90,7 +92,7 @@ export default class Register extends Component {
           </View>
           <View style={styles.viewTextInput}> 
             <View style={{ flex:1, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-              <Text style={{marginBottom:5, marginRight:5}}>Tel.</Text>
+              <Text style={{marginBottom:5, marginRight:5, fontFamily:'Kanit-ExtraLight'}}>Tel.</Text>
               <View style={{flex:1}}>
                 <TextInput
                   keyboardType={'numeric'}
@@ -103,7 +105,7 @@ export default class Register extends Component {
           </View>
           <View style={styles.viewTextInput}> 
             <View style={{ width:width*0.6}}>
-              <Text style={{marginBottom:5}}>Student ID.</Text>
+              <Text style={{marginBottom:5, fontFamily:'Kanit-ExtraLight'}}>Student ID.</Text>
               <View style={{flex:1}}>
                 <TextInput
                   keyboardType={'numeric'}
@@ -113,7 +115,7 @@ export default class Register extends Component {
               </View>
             </View>
             <View style={{ width:width*0.2, marginLeft:10}}>
-              <Text style={{marginBottom:5}}>รุ่น</Text>
+              <Text style={{marginBottom:5, fontFamily:'Kanit-ExtraLight'}}>รุ่น</Text>
               <View style={{flex:1}}>
                 <TextInput
                   keyboardType={'numeric'}
@@ -127,8 +129,8 @@ export default class Register extends Component {
           <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
               <TouchableOpacity style={styles.buttonSuccess} activeOpacity={0.5} 
                                 onPress={this.submitButton.bind(this)}
-               >
-                <Text style={{fontSize:20, fontFamily:'Kanit-Light'}}>บันทึก</Text>
+              >
+                <Text style={{fontSize:20, fontFamily:'Kanit-ExtraLight'}}>บันทึก</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -157,6 +159,7 @@ const styles = StyleSheet.create({
     borderRadius:5,
     height:height*0.06,
     marginBottom:10,
+    fontFamily:'Kanit-ExtraLight'
   },
   viewTextInput: {
     flexDirection:'row', 
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
     marginTop:20
   },
   buttonSuccess: {
-    backgroundColor:'#2ecc71',
+    backgroundColor:'#01a69f',
     height:50,
     width:100,
     borderRadius:5,

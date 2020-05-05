@@ -4,7 +4,8 @@ import MapView, {PROVIDER_GOOGLE, CalloutSubview } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import mapStyle from '../json/mapStyle.json'
-import AwesomeAlert  from 'react-native-awesome-alerts';
+import AlertPro from "react-native-alert-pro";
+
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
@@ -80,6 +81,193 @@ var arraytest = [
   }
 ]
 
+// const mapStyle = [
+//   {
+//     "elementType": "geometry",
+//     "stylers": [
+//       {
+//         "color": "#212121"
+//       }
+//     ]
+//   },
+//   {
+//     "elementType": "labels.icon",
+//     "stylers": [
+//       {
+//         "visibility": "off"
+//       }
+//     ]
+//   },
+//   {
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#757575"
+//       }
+//     ]
+//   },
+//   {
+//     "elementType": "labels.text.stroke",
+//     "stylers": [
+//       {
+//         "color": "#212121"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "administrative",
+//     "elementType": "geometry",
+//     "stylers": [
+//       {
+//         "color": "#757575"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "administrative.country",
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#9e9e9e"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "administrative.land_parcel",
+//     "stylers": [
+//       {
+//         "visibility": "off"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "administrative.locality",
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#bdbdbd"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "poi",
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#757575"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "poi.park",
+//     "elementType": "geometry",
+//     "stylers": [
+//       {
+//         "color": "#181818"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "poi.park",
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#616161"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "poi.park",
+//     "elementType": "labels.text.stroke",
+//     "stylers": [
+//       {
+//         "color": "#1b1b1b"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "road",
+//     "elementType": "geometry.fill",
+//     "stylers": [
+//       {
+//         "color": "#2c2c2c"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "road",
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#8a8a8a"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "road.arterial",
+//     "elementType": "geometry",
+//     "stylers": [
+//       {
+//         "color": "#373737"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "road.highway",
+//     "elementType": "geometry",
+//     "stylers": [
+//       {
+//         "color": "#3c3c3c"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "road.highway.controlled_access",
+//     "elementType": "geometry",
+//     "stylers": [
+//       {
+//         "color": "#4e4e4e"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "road.local",
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#616161"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "transit",
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#757575"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "water",
+//     "elementType": "geometry",
+//     "stylers": [
+//       {
+//         "color": "#000000"
+//       }
+//     ]
+//   },
+//   {
+//     "featureType": "water",
+//     "elementType": "labels.text.fill",
+//     "stylers": [
+//       {
+//         "color": "#3d3d3d"
+//       }
+//     ]
+//   }
+// ]
+
 export default class Mapview extends Component {
   constructor(props) {
     super(props);
@@ -87,7 +275,8 @@ export default class Mapview extends Component {
       lat:null,
       lng:null,
       coor:null,
-      markers: [],
+      markers:[],
+      markers1:[],
       dataFromApi:[],
       isModalVisible: false,
       isVisibleAlert:false,
@@ -99,7 +288,6 @@ export default class Mapview extends Component {
       phon_detail:'',
       line_detail:'',
       facebook_detail:'',
-      name_detail:'',
     };
   }
 
@@ -115,6 +303,7 @@ export default class Mapview extends Component {
     },
     { enableHighAccuracy: true, timeout: 20000 , maximumAge: 2000,})
     this.fetchAPIGet_Shop()
+    this.markerMapView()
   }
 //   this.setState({
 //     markers: [ ...this.state.markers,
@@ -127,48 +316,37 @@ export default class Mapview extends Component {
       if(this.props.handleUser){
         this.props.hadlePoint(true, e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
     } else {
-      // Alert.alert(
-      //   'คำเตือน',
-      //   'คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อใช้งานฟังก์ชัน',
-      //   [
-      //     {
-      //       text:"ยกเลิก",
-      //       style:'cancel'
-      //     },
-      //     {
-      //       text:"ยืนยัน",
-      //       onPress: this.props.haddleManageLoginUser 
-      //     }
-      //   ]
-      // )
-      this.showAlert()
+      // this.AlertPro.open()
+      // this.AlertPro.close()
+      Alert.alert(
+        'คำเตือน',
+        'คุณต้องล๊อกอินเข้าสู่ระบบ เพื่อใช้งานฟังก์ชัน',
+        [
+          {
+            text:"ยกเลิก",
+            style:'cancel'
+          },
+          {
+            text:"ยืนยัน",
+            onPress: this.props.haddleManageLoginUser 
+          }
+        ]
+      )
+      
     }
   }
 
-  showAlert() {
-    this.setState({
-      isVisibleAlert:!this.state.isVisibleAlert
-    });
-  };
-
-  hindAlert() {
-    this.setState({
-      isVisibleAlert:!this.state.isVisibleAlert
-    });
-  };
-
   render() {
     // console.log('lng:', this.state.lng)
-    // console.log('lat:', this.state.lat)
-    // console.log('statusUser Child:', this.props.handleUser)
-    // console.log('arraytest:', arraytest)
+    // console.log('arraytest1', this.state.markers1)
+    // console.log('arraytest2:', this.state.markers)
     return (
       <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
         <MapView 
           ref="map" 
           mapType="terrain" 
           style={styles.map} 
-          provider={PROVIDER_GOOGLE}
+          // provider={MapView.PROVIDER_GOOGLE}
           onLongPress={e => this.onMapPress(e)}
           showsUserLocation={true}
           // showsMyLocationButton={true}
@@ -181,18 +359,21 @@ export default class Mapview extends Component {
           customMapStyle={mapStyle}
         >
         {
-          arraytest != null && arraytest.map((marker, index) => (
+         this.state.markers1 != null && this.state.markers1.map((marker, index) => (
             <MapView.Marker
                 key = {index}
                 coordinate={marker.location}
                 title={marker.name}
                 description={marker.des}
-                // pinColor={marker.color}  color of marker
+                // pinColor={'#01a69f'} 
                 onMapPress
             >
+
               <MapView.Callout onPress={() => {this.modalDetailPoint(marker.id)}} >
                 <View style={{flex:1, borderRadius:40, padding:10}}>
                   <Text>{marker.name}</Text>
+
+
                 </View>
               </MapView.Callout>
             </MapView.Marker>
@@ -245,31 +426,54 @@ export default class Mapview extends Component {
                 </View>
             </ScrollView>
           </Modal>
-          <AwesomeAlert
-            show={this.state.isVisibleAlert}
-            showProgress={false}
-            title="คำเตือน"
-            message="คุณต้องล๊อกอินเข้าสู่ระบบเพื่อเปิดใช้งานฟังก์ชั่น"
-            closeOnTouchOutside={true}
-            closeOnHardwareBackPress={true}
-            showCancelButton={true}
-            showConfirmButton={true}
-            cancelText="ยกเลิก"
-            confirmText="ยืนยัน"
-            confirmButtonColor="#01a69f"
-            onCancelPressed={() => {
-              this.setState({isVisibleAlert:!this.state.isVisibleAlert})
-            }}
-            onConfirmPressed={()=> {this.confirmLogin}}
-          />
+          <AlertPro
+          ref={ref => {
+            this.AlertPro = ref;
+          }}
+          onConfirm={ this.props.haddleManageLoginUser }
+          useNativeDriver={true}
+          onCancel={() => this.AlertPro.close()}
+          title="Delete confirmation"
+          transparent={false}
+          message="Are you sure to delete the entry?"
+          textCancel="Cancel"
+          textConfirm="Confirm"
+          customStyles={{
+            mask: {
+              backgroundColor: "transparent"
+            },
+            // container: {
+            //   borderWidth: 1,
+            //   borderColor: "gray",
+            //   shadowColor: "#000000",
+            //   shadowOpacity: 0.1,
+            //   shadowRadius: 10
+            // },
+            buttonCancel: {
+              backgroundColor: "#4da6ff"
+            },
+            buttonConfirm: {
+              backgroundColor: "#ffa31a"
+            }
+          }}
+        />
       </View>
     );
   }
 
-  confirmLogin() {
-    this.props.haddleManageLoginUser
-    // console.log('props', this.props)
-    this.setState({isVisibleAlert:!this.state.isVisibleAlert})
+  markerMapView() {
+    fetch('http://sharing.greenmile.co.th/api/get_shop')
+    .then((response) => response.json())
+    .then((json) => {
+      console.log('data : ', json.data)
+      this.setState({
+        marker:json.data,
+        markers1:json.data
+      })
+    })
+    .catch((error) => {
+      console.error('Error in fetchAPIGet_category: ',error);
+    });
   }
 
   modalDeletePoint() {
@@ -343,7 +547,7 @@ const styles = StyleSheet.create({
   map: {
     width: width,
     height: height,
-    zIndex: -1
+    // zIndex: -1
   },
   radius: {
     height: 50,

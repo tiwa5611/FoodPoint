@@ -5,6 +5,7 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager}from 'react-native-fbsdk';
 import Map from './Map';
+import Search from './Search'
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 var user_name_face = ''
@@ -17,7 +18,6 @@ export default class FloatingButtonScreen extends Component {
     this.state = {
       isModalVisibleInput:false,
       isModalVisibleSearch:false,
-      statusUserLoginProfile:false,
       statusUserLogin:false,
       //-------------------------- variable facebook ----------------------------
       token:'',
@@ -39,16 +39,20 @@ export default class FloatingButtonScreen extends Component {
     };
     this.handleLatLong = this.handleLatLong.bind(this)
     this.handleMarkPoint = this.handleMarkPoint.bind(this)
+    this.hadleStateModal = this.hadleStateModal.bind(this)
   }
 
   async componentDidMount () {
     var token = await AsyncStorage.getItem('token')
     try{
       if (token !== null ) { 
-        this.setState({token:token, userID:await AsyncStorage.getItem('userID'), 
+        this.setState({
+                      token:token, 
+                      userID:await AsyncStorage.getItem('userID'), 
                       user_name:await AsyncStorage.getItem('name'), 
                       pic_url:await AsyncStorage.getItem('pic_url'), 
-                      statusUserLogin:true})
+                      statusUserLogin:true
+                    })
       }
     }catch(err){
       console.error('Error:', err)
@@ -81,6 +85,7 @@ export default class FloatingButtonScreen extends Component {
       //Alert for the Error
       Alert.alert('Error fetching data: ' + error.toString());
     } else {
+
       this.setState({ profile_pic: result.picture.data.url, user_name: result.name });
       user_name_face = result.name
       pic_url_face = result.picture.data.url
@@ -96,14 +101,16 @@ export default class FloatingButtonScreen extends Component {
     .then((response) => response.json())
     .then((json) => {
       if( json.data == 'not found' ) {
-        this.setState({statusUserLoginProfile:true})
         this.props.navigation.navigate('ลงทะเบียน', { data:{
           username:user_name_face,
           imageProfile:pic_url_face,
-          user_id:this.state.userID
-        }})
+          user_id:this.state.userID,
+        }
+      })
+      // this.setState({statusUserLogin:true})
       } else {
-        this.setState({statusUserLoginProfile:false})
+      //   console.log('set statususer')
+      //   this.setState({statusUserLogin:true})
       }
     })
     .catch((error) => {
@@ -112,9 +119,10 @@ export default class FloatingButtonScreen extends Component {
   }
   // 
   fbAuthen = () => {
-  console.log('xxxxx')
-  LoginManager.logInWithPermissions(["public_profile"]).then(
-    (result) => {
+  console.log('fbAuthen Alert')
+    LoginManager.logInWithPermissions(["public_profile"])
+    .then(
+      (result) => {
       if (result.isCancelled) {
         console.log("Login cancelled");
       } else {
@@ -126,7 +134,7 @@ export default class FloatingButtonScreen extends Component {
           userId = data.userID.toString()
           this.setState({token:toKen, userID:userId, statusUserLogin:true})
           this.setValue(toKen, userId)
-          const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null,this.get_Response_Info);
+          const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null, this.get_Response_Info);
           new GraphRequestManager().addRequest(infoRequest).start();
         })
       }
@@ -167,84 +175,29 @@ export default class FloatingButtonScreen extends Component {
     )
   }
 
-  test () {
-    console.log('xxxxtget')
+  hadleStateModal(state) {
+    this.setState({
+      isModalVisibleSearch:state
+    })
   }
 
   render() {
+    console.log('state search modal: ', this.state.isModalVisibleSearch)
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
             <Map 
               handleResponse={this.handleLatLong} 
               handleUser={this.state.statusUserLogin}
-              haddleManageLoginUser={this.test}
+              haddleManageLoginUser={this.fbAuthen}
               hadlePoint={this.handleMarkPoint}
               handleFacebookId={this.state.userID}
             />
             {/* <------------------------------------------------------------------- Modal form Search -------------------------------------------------------------- */}
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={this.state.isModalVisibleSearch}
-              onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
-              }}
-            >
-            <View style={{flex:1, backgroundColor:'white', marginLeft:30, marginRight:30, marginTop:height*0.3, marginBottom:height*0.3, borderRadius:5,}}>
-                <View style={{flexDirection:'row', marginLeft:30, marginRight:30, marginTop:20, borderWidth:1, borderColor:'gray', marginBottom:10, borderRadius:5}}>
-                    <Text style={{fontFamily:'Kanit-ExtraLight' , fontSize:20, padding:10}}>Province |</Text>
-                    <View style={{flex:1}}>
-                        <Picker
-                        selectedValue={this.state.language}
-                        style={{flex:1}}
-                        onValueChange={(itemValue, itemIndex) =>
-                          this.setState({language: itemValue})
-                        }>
-                          { this.state.get_province.map((value) => {
-                              return <Picker.Item label={value.name} value={value.id}/>
-                            })  
-                          }
-                      </Picker>
-                    </View>
-                </View>
-                <View style={{flexDirection:'row',  marginLeft:30, marginRight:30, borderWidth:1, borderColor:'gray',borderRadius:5}}>
-                    <Text style={{fontFamily:'Kanit-ExtraLight', fontSize:20, padding:10}}>Categories |</Text>
-                    <View style={{flex:1}}>
-                        <Picker
-                        selectedValue={this.state.language}
-                        style={{flex:1}}
-                        onValueChange={(itemValue, itemIndex) =>
-                          this.setState({language: itemValue})
-                        }>
-                          { this.state.get_categorial !== null && this.state.get_categorial.map((value) => {
-                              return <Picker.Item label={value.name} value={value.id} />
-                            })
-                          }
-                      </Picker>
-                    </View>
-                </View>
-                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:height*0.04}}>
-                  <View style={{marginLeft:5}}>
-                    <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} 
-                   onPress={() =>  { this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch}) }
-                  }
-                    >
-                      <Icon name={'search'} size={20} color={'#ffffff'}/>
-                      <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>ค้นหา</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={{marginLeft:5}}>
-                    <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#ff7675', borderRadius:5}} activeOpacity={0.5} 
-                    onPress={() =>  { this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch}) }}
-                    >
-                      <Icon name={'brush'} size={20}  color={'#ffffff'}/>
-                      <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>ล้างข้อมูล</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </Modal>
+            <Search
+                      hadleModal={this.state.isModalVisibleSearch}
+                      hadleCallbackModal={this.hadleStateModal}
+                    />
             {/* <------------------------------------------------------------------- Modal form input -------------------------------------------------------------- */} 
             <Modal
               animationType="fade"
@@ -362,6 +315,7 @@ export default class FloatingButtonScreen extends Component {
                   onPress={ () => this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch})}
                   >
                     <Icon name="search-location" style={styles.actionButtonIcon} color='#ffffff' />
+                    
                 </ActionButton.Item>
                 <ActionButton.Item buttonColor='#e84118'
                    onPress={() => { this.state.statusUserLogin ? this.fetchApiForInputForm() : 
@@ -386,12 +340,11 @@ export default class FloatingButtonScreen extends Component {
     );
   }
 
-  test = () => {
-    console.log('xxxxx')
-  }
-
   fetchAPIAdd_shop = () => {
     console.log('fetchAPIAdd_shop success')
+    console.log(this.state.userID)
+    console.log(this.state.latitude_state)
+    console.log(this.state.longitude_state)
     if(this.state.shop_name_state == ''){
       alert('กรุณาใส่ชื่อร้าน')
     } else {

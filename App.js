@@ -58,11 +58,15 @@ export default class App extends Component {
     };
   }
 
+  componentDidMount() {
+    StatusBar.setHidden(true)
+  }
+
   render() {
     return (
       <SafeAreaProvider>
         <NavigationContainer >
-          <StatusBar barStyle="light-content" backgroundColor="#01a69f" /> 
+          <StatusBar barStyle="light-content" backgroundColor="#01a69f" hidden={false}/> 
           <MyStack/>
         </NavigationContainer>
       </SafeAreaProvider>
