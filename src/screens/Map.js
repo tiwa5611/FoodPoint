@@ -310,6 +310,7 @@ export default class Mapview extends Component {
 // });
   onMapPress(e) {
       if(this.props.handleUser){
+        this.setState({lat:e.nativeEvent.coordinate.latitude, lng:e.nativeEvent.coordinate.longitude})
         this.props.hadlePoint(true, e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
     } else {
       // this.AlertPro.open()
