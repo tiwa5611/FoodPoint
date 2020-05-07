@@ -49,9 +49,9 @@ export default class FloatingButtonScreen extends Component {
     try{
       if (user_id !== null ) { 
         this.setState({
-                      userID:await AsyncStorage.getItem('userID'), 
-                      user_name:await AsyncStorage.getItem('name'), 
-                      pic_url:await AsyncStorage.getItem('pic_url'), 
+                      userID:user_id, 
+                      // user_name:await AsyncStorage.getItem('name'), 
+                      // pic_url:await AsyncStorage.getItem('pic_url'), 
                       statusUserLogin:true
                     })
       } else {
@@ -104,7 +104,6 @@ export default class FloatingButtonScreen extends Component {
       //Alert for the Error
       Alert.alert('Error fetching data: ' + error.toString());
     } else {
-
       this.setState({ profile_pic: result.picture.data.url, user_name: result.name });
       user_name_face = result.name
       pic_url_face = result.picture.data.url
@@ -126,43 +125,47 @@ export default class FloatingButtonScreen extends Component {
           user_id:this.state.userID,
         }
       })
-      // this.setState({statusUserLogin:true})
       } else {
       //   console.log('set statususer')
       //   this.setState({statusUserLogin:true})
+        this.setValue()
       }
     })
     .catch((error) => {
       console.error('profile',error);
     });
   }
+
+  async setValue() {
+    await AsyncStorage.setItem('userID',this.state.userID)
+  }
   // 
   fbAuthen = () => {
-  console.log('fbAuthen Alert')
-    LoginManager.logInWithPermissions(["public_profile"])
-    .then(
-      (result) => {
-      if (result.isCancelled) {
-        console.log("Login cancelled");
-      } else {
-        console.log('fbAuthen2')
-        var toKen
-        var userId
-        AccessToken.getCurrentAccessToken().then((data) => {
-          toKen = data.accessToken.toString()
-          userId = data.userID.toString()
-          this.setState({token:toKen, userID:userId, statusUserLogin:true})
-          // this.setValue(toKen, userId)
-          const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null, this.get_Response_Info);
-          new GraphRequestManager().addRequest(infoRequest).start();
-        })
+        console.log('fbAuthen Alert')
+        LoginManager.logInWithPermissions(["public_profile"])
+        .then(
+          (result) => {
+          if (result.isCancelled) {
+            console.log("Login cancelled");
+          } else {
+            console.log('fbAuthen2')
+            var toKen
+            var userId
+            AccessToken.getCurrentAccessToken().then((data) => {
+              toKen = data.accessToken.toString()
+              userId = data.userID.toString()
+              this.setState({token:toKen, userID:userId, statusUserLogin:true})
+              // this.setValue(toKen, userId)
+              const infoRequest = new GraphRequest('/me?fields=name,picture.type(large)',null, this.get_Response_Info);
+              new GraphRequestManager().addRequest(infoRequest).start();
+            })
+          }
+        },
+        (error) => {
+        console.log("Login fail with error: " + error);
       }
-    },
-    (error) => {
-      console.log("Login fail with error: " + error);
-    }
-  );
-}
+    );
+  }
 
   // async setValue(toKen, userID) {
   //   await AsyncStorage.setItem('token',toKen)
@@ -188,12 +191,11 @@ export default class FloatingButtonScreen extends Component {
             await AsyncStorage.removeItem('name')
             await AsyncStorage.removeItem('pic_url')
             this.setState({token:'', userID:'', user_name:'', profile_pic:'', statusUserLogin:false})
-           }
+            }
         }
       ]
     )
   }
-
 
   render() {
     // console.log('state search modal: ', this.state.isModalVisibleSearch)
@@ -385,22 +387,25 @@ export default class FloatingButtonScreen extends Component {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log('response', json.data)
-        this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
-        this.fetchApiGetShop()   //Fetch data when user click save button
+        if( json.data != 'false') {
+          this.setState({isModalVisibleInput: !this.state.isModalVisibleInput})
+          this.fetchApiGetShop()   //Fetch data when user click save button
+          alert('บันทึกข้อมูลสำเร็จ')
+        } else {
+          alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล')
+        }
       })
       .catch((error) => {
-        console.error('Fetch API error in add_shop', error);
+        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล', error)
+        // console.error('Fetch API error in add_shop', error);
       });
     }
   }
 
   fetchApiGetShop = () => {
-    console.log('markerMapView active')
     fetch('http://sharing.greenmile.co.th/api/get_shop')
     .then((response) => response.json())
     .then((json) => {
-      console.log('data : ', json.data)
       this.setState({
         get_shop:json.data,
       })
@@ -445,7 +450,6 @@ export default class FloatingButtonScreen extends Component {
   }
 }
 // 
-
 const styles = StyleSheet.create({
     actionButtonIcon: {
       fontSize: 22,
@@ -455,14 +459,14 @@ const styles = StyleSheet.create({
       flex:1,
       margin:20,
       marginTop:height*0.22,
-      backgroundColor:'white',
+      backgroundColor:'#dff9fb',
       borderRadius:10
     },
     container: {
       flex:1,
       marginRight:10,
       marginLeft:10,
-      marginBottom:10
+      marginBottom:10,
   },
   textHeader:{
     fontSize:width*0.05,

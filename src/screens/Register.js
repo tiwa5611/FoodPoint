@@ -21,12 +21,6 @@ export default class Register extends Component {
   }
   
   submitButton() {
-      
-
-      // console.log('batch', this.state.batch)
-      // console.log('name', this.state.name)
-      // console.log('phonenumber', this.state.phonenumber)
-      // console.log('facebook_id', facebook_id_temp)
 
       fetch('http://sharing.greenmile.co.th/api/register',{
         method: 'POST',
@@ -46,7 +40,6 @@ export default class Register extends Component {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log('response', json.data)
         this.setValue(facebook_id_temp, this.state.name, this.state.picture)
         this.props.navigation.goBack()
       })

@@ -308,7 +308,7 @@ export default class Mapview extends Component {
 //       },
 //     ],
 // });
-    onMapPress(e) {
+  onMapPress(e) {
       if(this.props.handleUser){
         this.props.hadlePoint(true, e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
     } else {
@@ -333,26 +333,24 @@ export default class Mapview extends Component {
   }
 
   render() {
-    console.log('fbAuthen:', this.props.fbAuthen)
-    // console.log('arraytest1', this.state.markers1)terrain/satellite/standard
-    // console.log('this.props:', this.props.handleGetShop)
+    console.log("latitude", this.state.lat)
+    console.log("longitude", this.state.lng)
     return (
       <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
         <MapView 
           ref="map" 
-          mapType="satellite" 
+          mapType="terrain"   //terrain//standard//satellite
           style={styles.map} 
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
-          onLongPress={e => this.onMapPress(e)}
+          onLongPress={ e => this.onMapPress(e) }
           showsUserLocation={true}
           showsMyLocationButton={true}
           showsTraffic={true}
           showsIndoors={true}
           showsScale={true}
-          toolbarEnabled={true}
-          followsUserLocation={true}
-          toolbarEnabled={true}
+          // toolbarEnabled={true}
+          // followsUserLocation={true}
           loadingBackgroundColor={'#81ecec'}
           region={{latitude: this.state.lat == null ? 37.419499: this.state.lat,
                           longitude:this.state.lng == null ? -122.080525: this.state.lng,
@@ -372,12 +370,9 @@ export default class Mapview extends Component {
                 onMapPress
                 onPress={() => {this.modalDetailPoint(marker.id)}}
             >
-
               <MapView.Callout  >
-                <View style={{flex:1, borderRadius:40, padding:10}}>
+                <View style={{flex:1, borderRadius:40, padding:5}}>
                   <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}}>{marker.name}</Text>
-
-
                 </View>
               </MapView.Callout>
             </MapView.Marker>
@@ -389,46 +384,54 @@ export default class Mapview extends Component {
             transparent={true}
             visible={this.state.isModalVisible}
           >
-            <ScrollView style={styles.modalView}>
-                <View style={styles.buttonModal}>
-                  <TouchableOpacity
-                    onPress={() => { this.setState({isModalVisible: !this.state.isModalVisible})}} >
-                    <Icon name={'times'} size={25} color={'#ecf0f1'}></Icon>
-                  </TouchableOpacity>
-                </View>
-                <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                  <View style={{justifyContent:'space-between'}}>
-                      <Text style={{marginLeft:10, fontSize:width*0.06, fontFamily:'Kanit-ExtraLight'}} >{this.state.name_detail}</Text>
-                  </View>                
-                </View>
-                <View style={styles.viewModalDetail}>
-                    <Icon name={'facebook'} style={styles.iconModalDetail} color={'#4267B2'}/>
-                    <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.facebook_detail == null ? text_null : this.state.facebook_detail}</Text>
-                </View>
-                <View style={styles.viewModalDetail}>
-                  <Icon name={'line'} style={styles.iconModalDetail} color={'#3ae374'}/>
-                  <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.line_detail  == null ? text_null : this.state.line_detail}</Text>
-                </View>
-                <View style={styles.viewModalDetail}>
-                  <Icon name={'phone'} style={styles.iconModalDetail} color={'gray'}/>
-                  <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.phon_detail  == null ? text_null : this.state.phon_detail}</Text>
-                </View>
-                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-                    <View style={styles.stylebuutonInModal}>
-                      <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} onPress={() => {} }>
-                        <Icon name={'pencil-alt'} size={20} color={'#ffffff'}/>
-                        <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>แก้ไข</Text>
-                      </TouchableOpacity>
+            <View style={styles.modalView}>
+              <View style={styles.buttonModal}>
+                <TouchableOpacity
+                  onPress={() => { this.setState({isModalVisible: !this.state.isModalVisible})}} >
+                  <Icon name={'times'} size={25} color={'#ecf0f1'}></Icon>
+                </TouchableOpacity>
+              </View>
+              <ScrollView >
+                  <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                    <View style={{justifyContent:'space-between'}}>
+                        <Text style={{marginLeft:10, fontSize:width*0.06, fontFamily:'Kanit-ExtraLight'}} >{this.state.name_detail}</Text>
+                    </View>                
+                  </View>
+                  <View style={{justifyContent:'center', alignItems:'center', marginBottom:5, marginTop:5}}>
+                      <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.facebook_detail == null ? text_null : this.state.des_detail}</Text>
+                  </View>
+                  <View style={styles.viewModalDetail}>
+                      <Icon name={'facebook'} style={styles.iconModalDetail} color={'#4267B2'}/>
+                      <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.facebook_detail == null ? text_null : this.state.facebook_detail}</Text>
+                  </View>
+                  <View style={styles.viewModalDetail}>
+                    <Icon name={'line'} style={styles.iconModalDetail} color={'#3ae374'}/>
+                    <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.line_detail  == null ? text_null : this.state.line_detail}</Text>
+                  </View>
+                  <View style={styles.viewModalDetail}>
+                    <Icon name={'phone'} style={styles.iconModalDetail} color={'gray'}/>
+                    <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.phon_detail  == null ? text_null : this.state.phon_detail}</Text>
+                  </View>
+                  { this.props.handleUser ?  
+                    <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+                        <View style={styles.stylebuutonInModal}>
+                          <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} onPress={() => {} }>
+                            <Icon name={'pencil-alt'} size={20} color={'#ffffff'}/>
+                            <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>แก้ไข</Text>
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.stylebuutonInModal}>
+                          <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#ff7675', borderRadius:5}} activeOpacity={0.5} 
+                            onPress={ this.modalDeletePoint.bind(this)} >
+                            <Icon name={'trash-alt'} size={20}  color={'#ffffff'}/>
+                            <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>ลบ</Text>
+                          </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={styles.stylebuutonInModal}>
-                      <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#ff7675', borderRadius:5}} activeOpacity={0.5} 
-                        onPress={ this.modalDeletePoint.bind(this)} >
-                        <Icon name={'trash-alt'} size={20}  color={'#ffffff'}/>
-                        <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>ลบ</Text>
-                      </TouchableOpacity>
-                    </View>
-                </View>
-            </ScrollView>
+                    : null
+                  }
+              </ScrollView>
+            </View>
           </Modal>
           <AlertPro
             ref={ref => {
@@ -466,8 +469,6 @@ export default class Mapview extends Component {
   }
 
   modalDeletePoint() {
-    console.log('ID: ', this.state.id_detail)
-    console.log('user_facebook_id: ', this.props.handleFacebookId)
     fetch('http://sharing.greenmile.co.th/api/delete_shop',{
       method: 'POST',
         headers: {
@@ -481,7 +482,6 @@ export default class Mapview extends Component {
     })
     .then((response) => response.json())
     .then((json) => {
-      console.log('response', json.data)
       this.props.handleRefetchGetShop(true)
       this.setState({isModalVisible: !this.state.isModalVisible})
     })
@@ -492,11 +492,9 @@ export default class Mapview extends Component {
   }
 
   modalDetailPoint( id ) {
-    console.log('http://sharing.greenmile.co.th/api/get_shop/'+id)
     fetch('http://sharing.greenmile.co.th/api/get_shop/'+id)
     .then((response) => response.json())
     .then((json) => {
-      console.log('data : ', json.data)
       this.setState({
         id_detail:json.data.id,
         name_detail:json.data.name,
@@ -504,7 +502,9 @@ export default class Mapview extends Component {
         phon_detail:json.data.phonenumber,
         line_detail:json.data.line_id,
         facebook_detail:json.data.facebook_id,
-        isModalVisible: true
+        isModalVisible: true,
+        lat:json.data.location.latitude,
+        lng:json.data.location.longitude
       })
     })
     .catch((error) => {
@@ -513,7 +513,6 @@ export default class Mapview extends Component {
   }
 
   fetchAPIGet_Shop() {
-    console.log('***************fetchAPIGet_category************')
       fetch('http://sharing.greenmile.co.th/api/get_shop')
       .then((response) => response.json())
       .then((json) => {
@@ -573,6 +572,7 @@ const styles = StyleSheet.create({
     justifyContent:'flex-end',
     marginTop:15,
     marginRight:15,
+    backgroundColor:'transparent'
   },
   viewModalDetail:{
     flexDirection:'row',

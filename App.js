@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import {
   StatusBar,
   Dimensions,
-  Picker
+  Alert
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Register from './src/screens/Register'
 import FloatingButtonScreen from './src/screens/FloatingButtonScreen'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ModalDropdown from 'react-native-modal-dropdown';
 
 const width = Dimensions.get('screen').width
 const Stack = createStackNavigator();
@@ -31,23 +32,34 @@ function MyStack() {
                     // headerTitleAlign:"center",
                     headerStyle: {
                       backgroundColor:'#01a69f',
-                      marginLeft:20,
+                      // marginLeft:20,
 
                     },
                     headerTitleStyle: {
                       fontFamily:'Kanit-Bold',
                       color:'#ffff',
                     },
-                    headerRight: () => (
-                      <Icon
-                        name={"list-ul"}
-                        size={width*0.06}
-                        onPress={() => alert('This is a button!')}
-                        color="#fff"
-                        style={{marginRight:15}}
-
-                      />
-                    ),
+                    // headerRight:  () => (
+                    //   <Icon
+                    //     onPress={() => Alert.alert(
+                    //       "Waiting!!",
+                    //       "Comming soon.",
+                    //       [
+                    //         {
+                    //           text: "Ok",
+                    //           onPress: () => console.log("Ok Pressed"),
+                    //           style: "Ok"
+                    //         }
+                    //       ],
+                    //       { cancelable: false }
+                    //     )}
+                    //     title="Info"
+                    //     color="#fff"
+                    //     name={'list'}
+                    //     size={25}
+                    //     // style={{marginRight:15}}
+                    //   />
+                    // )
                   }}/>
       <Stack.Screen name="ลงทะเบียน" 
                     component={Register} 
