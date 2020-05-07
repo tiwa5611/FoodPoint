@@ -27,6 +27,7 @@ export default class FloatingButtonScreen extends Component {
       get_categorial:[],
       get_province:[],
       get_shop:[],
+      get_shop_search:null,
       //--------------------------- variable for input form ----------------------
       shop_name_state:'',
       description_state:'',
@@ -42,6 +43,7 @@ export default class FloatingButtonScreen extends Component {
     this.handleMarkPoint = this.handleMarkPoint.bind(this)
     this.hadleStateModal = this.hadleStateModal.bind(this)
     this.handleCallbackDeletePoint = this.handleCallbackDeletePoint.bind(this)
+    this.searchData =this.searchData.bind(this)
   }
 
   async componentDidMount () {
@@ -75,6 +77,12 @@ export default class FloatingButtonScreen extends Component {
       isModalVisibleInput:visibleModal, 
       latitude_state:lat, 
       longitude_state:lng
+    })
+  }
+
+  searchData ( data ) {
+    this.setState({
+      get_shop_search:data
     })
   }
 
@@ -208,13 +216,14 @@ export default class FloatingButtonScreen extends Component {
               haddleManageLoginUser={this.fbAuthen}
               hadlePoint={this.handleMarkPoint}
               handleFacebookId={this.state.userID}
-              handleGetShop={this.state.get_shop}
+              handleGetShop={this.state.get_shop_search == null ? this.state.get_shop : this.state.get_shop_search }
               handleRefetchGetShop={this.handleCallbackDeletePoint}
             />
             {/* <------------------------------------------------------------------- Modal form Search -------------------------------------------------------------- */}
             <Search
               hadleModal={this.state.isModalVisibleSearch}
               hadleCallbackModal={this.hadleStateModal}
+              handleGetSearchData={this.searchData}
             />
             {/* <------------------------------------------------------------------- Modal form input -------------------------------------------------------------- */} 
             <Modal
