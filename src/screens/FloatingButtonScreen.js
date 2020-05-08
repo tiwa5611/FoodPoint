@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { Alert, View, Text, StyleSheet, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity} from 'react-native';
 import ActionButton from 'react-native-action-button';
-// import { Icon } from 'native-base';
+import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager}from 'react-native-fbsdk';
 import Map from './Map';
@@ -104,6 +104,16 @@ export default class FloatingButtonScreen extends Component {
     if( bool ) {
       this.fetchApiGetShop()
     }
+  }
+
+  chootImage = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true
+    }).then(image => {
+      console.log('test get Image', image);
+    });
   }
 
   get_Response_Info = (error, result) => {
@@ -322,6 +332,10 @@ export default class FloatingButtonScreen extends Component {
                         value={this.state.latitude_state+','+this.state.longitude_state}
                       />
                   </View>
+                  <TouchableOpacity style={{flexDirection:'row'}} activeOpacity={0.5} onPress={() => { this.chootImage() }}>
+                      <Icon name={'file-image'} size={20} color={'gray'}/>
+                      <Text style={{fontSize:width*0.04, fontFamily:'Kanit-ExtraLight', marginLeft:5}}>เลือกรูปภาพ</Text>
+                    </TouchableOpacity>
                   <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:20}}>
                     <TouchableOpacity style={styles.buttonSuccess} activeOpacity={0.5} onPress={ this.fetchAPIAdd_shop }>
                       <Text style={{fontSize:15, fontFamily:'Kanit-ExtraLight'}}>บันทึก</Text>
