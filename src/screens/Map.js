@@ -11,266 +11,6 @@ const width = Dimensions.get('window').width;
 
 var text_null = 'ไม่มีข้อมูล'
 
-
-var arraytest = [
-  {
-    "id": 23,
-    "name": "ต๋องชาบู",
-    "description": "บาชูหัวหมา",
-    "phonenumber": "191",
-    "line_id": null,
-    "facebook_id": null,
-    "category": {
-        "id": 21,
-        "name": "ที่ปรึกษา"
-    },
-    "province": {
-        "id": 64,
-        "name": "กระบี่"
-    },
-    "location": {
-        "latitude": 37.413022220357,
-        "longitude": -122.0810906589
-    },
-    "user": {
-        "facebook_id": "1090377851317204"
-    }
-  },
-  {
-    "id": 24,
-    "name": "ร้านยืมเพื่อน",
-    "description": "ยืนเพื่อนมาขาย",
-    "phonenumber": "191",
-    "line_id": "Friend.polic",
-    "facebook_id": "ต๋องไงจะไคนละ",
-    "category": {
-        "id": 4,
-        "name": "นาฬิกาและแว่นตา"
-    },
-    "province": {
-        "id": 35,
-        "name": "สกลนคร"
-    },
-    "location": {
-        "latitude": 37.435735930867,
-        "longitude": -122.08341982216
-    },
-    "user": {
-        "facebook_id": "1090377851317204"
-    }
-  },
-  {
-    "id": 25,
-    "name": "สุขภาพดี",
-    "description": "สุขภาพดีๆมีขายที่นี้",
-    "phonenumber": "0899999999",
-    "line_id": "T.op",
-    "facebook_id": "Poal.dee",
-    "category": {
-        "id": 12,
-        "name": "สุขภาพและความงาม"
-    },
-    "province": {
-        "id": 59,
-        "name": "สมุทรสาคร"
-    },
-    "location": {
-        "latitude": 37.394360650186,
-        "longitude": -122.0765138045
-    },
-    "user": {
-        "facebook_id": "1090377851317204"
-    }
-  }
-]
-
-// const mapStyle = [
-//   {
-//     "elementType": "geometry",
-//     "stylers": [
-//       {
-//         "color": "#212121"
-//       }
-//     ]
-//   },
-//   {
-//     "elementType": "labels.icon",
-//     "stylers": [
-//       {
-//         "visibility": "off"
-//       }
-//     ]
-//   },
-//   {
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#757575"
-//       }
-//     ]
-//   },
-//   {
-//     "elementType": "labels.text.stroke",
-//     "stylers": [
-//       {
-//         "color": "#212121"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "administrative",
-//     "elementType": "geometry",
-//     "stylers": [
-//       {
-//         "color": "#757575"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "administrative.country",
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#9e9e9e"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "administrative.land_parcel",
-//     "stylers": [
-//       {
-//         "visibility": "off"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "administrative.locality",
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#bdbdbd"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "poi",
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#757575"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "poi.park",
-//     "elementType": "geometry",
-//     "stylers": [
-//       {
-//         "color": "#181818"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "poi.park",
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#616161"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "poi.park",
-//     "elementType": "labels.text.stroke",
-//     "stylers": [
-//       {
-//         "color": "#1b1b1b"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "road",
-//     "elementType": "geometry.fill",
-//     "stylers": [
-//       {
-//         "color": "#2c2c2c"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "road",
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#8a8a8a"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "road.arterial",
-//     "elementType": "geometry",
-//     "stylers": [
-//       {
-//         "color": "#373737"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "road.highway",
-//     "elementType": "geometry",
-//     "stylers": [
-//       {
-//         "color": "#3c3c3c"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "road.highway.controlled_access",
-//     "elementType": "geometry",
-//     "stylers": [
-//       {
-//         "color": "#4e4e4e"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "road.local",
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#616161"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "transit",
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#757575"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "water",
-//     "elementType": "geometry",
-//     "stylers": [
-//       {
-//         "color": "#000000"
-//       }
-//     ]
-//   },
-//   {
-//     "featureType": "water",
-//     "elementType": "labels.text.fill",
-//     "stylers": [
-//       {
-//         "color": "#3d3d3d"
-//       }
-//     ]
-//   }
-// ]
-
 export default class Mapview extends Component {
   constructor(props) {
     super(props);
@@ -334,8 +74,6 @@ export default class Mapview extends Component {
   }
 
   render() {
-    console.log("latitude", this.state.lat)
-    console.log("longitude", this.state.lng)
     return (
       <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
         <MapView 
@@ -345,19 +83,21 @@ export default class Mapview extends Component {
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
           onLongPress={ e => this.onMapPress(e) }
-          showsUserLocation={true}
+          showsUserLocation provider="google"
           showsMyLocationButton={true}
-          showsTraffic={true}
+          // showsTraffic={true}
           showsIndoors={true}
-          showsScale={true}
-          // toolbarEnabled={true}
-          // followsUserLocation={true}
+          // showsScale={true}
+          showsCompass={true}
+          showsBuildings
+          followsUserLocation={true}
           loadingBackgroundColor={'#81ecec'}
-          region={{latitude: this.state.lat == null ? 37.419499: this.state.lat,
-                          longitude:this.state.lng == null ? -122.080525: this.state.lng,
-                          latitudeDelta: 0.0922, 
-                          longitudeDelta: 0.0421
-                        }}
+          region={{
+            latitude: this.state.lat == null ? 13.0110712: this.state.lat,
+            longitude:this.state.lng == null ? 96.9949203: this.state.lng,
+            latitudeDelta: 0.0922, 
+            longitudeDelta: 0.0421
+          }}
           // initialRegion
         >
         {
@@ -413,7 +153,7 @@ export default class Mapview extends Component {
                     <Icon name={'phone'} style={styles.iconModalDetail} color={'gray'}/>
                     <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}} >{this.state.phon_detail  == null ? text_null : this.state.phon_detail}</Text>
                   </View>
-                  { this.props.handleUser ?  
+                  { this.props.handleUser || ( this.props.handleFacebookId == this.state.facebook_detail ) ?  
                     <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                         <View style={styles.stylebuutonInModal}>
                           <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} onPress={() => {} }>
@@ -502,7 +242,7 @@ export default class Mapview extends Component {
         des_detail:json.data.description,
         phon_detail:json.data.phonenumber,
         line_detail:json.data.line_id,
-        facebook_detail:json.data.facebook_id,
+        facebook_detail:json.data.user.facebook_id,
         isModalVisible: true,
         lat:json.data.location.latitude,
         lng:json.data.location.longitude
