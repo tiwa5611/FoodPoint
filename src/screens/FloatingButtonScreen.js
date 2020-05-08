@@ -84,7 +84,6 @@ export default class FloatingButtonScreen extends Component {
     this.setState({
       get_shop_search:data
     })
-    console.log(this.state.get_shop_search)
   }
 
   handleLatLong (lat, lng) {

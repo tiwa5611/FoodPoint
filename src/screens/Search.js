@@ -111,9 +111,9 @@ componentDidMount() {
             </View>
             <View style={{marginLeft:5}}>
               <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#ff7675', borderRadius:5}} activeOpacity={0.5} 
-              onPress={() =>  { 
+              onPress={() =>  {
+                this.props.handleGetSearchData(null)
                 this.props.hadleCallbackModal(false)
-                // this.setState({isModalVisibleSearch: !this.state.isModalVisibleSearch}) 
               }}
               >
                 <Icon name={'brush'} size={20}  color={'#ffffff'}/>
