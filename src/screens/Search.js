@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { View, Text, Modal, Dimensions, Picker, TouchableOpacity, ProgressViewIOS } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -9,10 +9,33 @@ export default class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        isModalVisibleSearch:false
+        isModalVisibleSearch:false,
+        get_province:[],
+        province_state:'',
+        get_categorial:[],
+        category_state:'',
     };
   }
 
+componentDidMount() {
+  fetch('http://sharing.greenmile.co.th/api/get_province')
+  .then((response) => response.json())
+  .then((json) => {
+    this.setState({get_province:json.data})
+  })
+  .catch((error) => {
+    console.error('Error in fetchAPIGet_province: ',error);
+  })
+
+  fetch('http://sharing.greenmile.co.th/api/get_category')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({get_categorial:json.data})
+      })
+      .catch((error) => {
+        console.error('Error in fetchAPIGet_category: ',error);
+      })
+}
 
   render() {
       console.log('props modal search:', this.props)
@@ -31,38 +54,55 @@ export default class Search extends Component {
               <Text style={{fontFamily:'Kanit-ExtraLight' , fontSize:20, padding:10}}>Province |</Text>
               <View style={{flex:1}}>
                   <Picker
-                  selectedValue={this.state.language}
+                  selectedValue={this.state.province_state == ''? 'กรุงเทพมหานคร': this.state.province_state}
                   style={{flex:1}}
-                  onValueChange={(itemValue, itemIndex) =>
-                    this.setState({language: itemValue})
+                  onValueChange={
+                    (itemValue, itemIndex) =>
+                    this.setState({province_state: itemValue})
                   }>
-                   {/* { this.state.get_province.map((value) => {
-                        return <Picker.Item style={{fontFamily:'Kanit-ExtraLight'}} label={value.name} value={value.id}/>
-                      })  
-                    } */}
+                    { this.state.get_province.map((value) => {
+                        return <Picker.Item label={value.name} value={value.id}/>
+                      }) 
+                    }
                 </Picker>
               </View>
           </View>
           <View style={{flexDirection:'row',  marginLeft:30, marginRight:30, borderWidth:1, borderColor:'gray',borderRadius:5}}>
               <Text style={{fontFamily:'Kanit-ExtraLight', fontSize:20, padding:10}}>Categories |</Text>
               <View style={{flex:1}}>
-                  <Picker
-                  selectedValue={this.state.language}
-                  style={{flex:1}}
-                  onValueChange={(itemValue, itemIndex) =>
-                    this.setState({language: itemValue})
-                  }>
-                    {/* { this.state.get_province.map((value) => {
-                        return <Picker.Item style={{fontFamily:'Kanit-ExtraLight'}} label={value.name} value={value.id}/>
-                      })  
-                    } */}
-                </Picker>
+              <Picker
+                          selectedValue={this.state.category_state == ''? 'กระเป๋า': this.state.category_state}
+                          style={{flex:1}}
+                          onValueChange={(itemValue, itemIndex) => 
+                            this.setState({category_state: itemValue})
+                          }>
+                            { this.state.get_categorial !== null && this.state.get_categorial.map((value) => {
+                                return <Picker.Item label={value.name} value={value.id} />
+                              })
+                            }
+                        </Picker>
               </View>
           </View>
           <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:height*0.04}}>
             <View style={{marginLeft:5}}>
               <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} 
-             onPress={() => {this.props.handlerModleSearch} 
+             onPress= { () => {
+              // get_shop_filter = []
+              var shop = new Object
+              var get_filter_shop = []
+               this.props.handleGetShop !== null && this.props.handleGetShop.map((value) => {
+                 shop = value
+                if ((value.province.id == this.state.province_state) && (value.category.id == this.state.category_state)) {
+                  shop.pincolor = "red"
+                }
+                 else{
+                  shop.pincolor = "gray"
+                 }
+                 get_filter_shop.push(value)
+               })
+               console.log(get_filter_shop)
+                // this.props.hadleCallbackModal(false)
+              }
             }
               >
                 <Icon name={'search'} size={20} color={'#ffffff'}/>
