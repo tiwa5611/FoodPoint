@@ -38,7 +38,7 @@ componentDidMount() {
 }
 
   render() {
-      console.log('props modal search:', this.props)
+      // console.log('props modal search:', this.props)
       console.log('this.state.isModalVisibleSearch:', this.state.isModalVisibleSearch)
     return (
         <Modal
@@ -87,9 +87,8 @@ componentDidMount() {
             <View style={{marginLeft:5}}>
               <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} 
              onPress= { () => {
-              // get_shop_filter = []
-              var shop = new Object
-              var get_filter_shop = []
+              let shop = new Object
+              let get_filter_shop = []
                this.props.handleGetShop !== null && this.props.handleGetShop.map((value) => {
                  shop = value
                 if ((value.province.id == this.state.province_state) && (value.category.id == this.state.category_state)) {
