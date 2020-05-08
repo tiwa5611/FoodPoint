@@ -38,7 +38,6 @@ componentDidMount() {
 }
 
   render() {
-      // console.log('props modal search:', this.props)
       console.log('this.state.isModalVisibleSearch:', this.state.isModalVisibleSearch)
     return (
         <Modal
@@ -54,7 +53,7 @@ componentDidMount() {
               <Text style={{fontFamily:'Kanit-ExtraLight' , fontSize:20, padding:10}}>Province |</Text>
               <View style={{flex:1}}>
                   <Picker
-                  selectedValue={this.state.province_state == ''? 'กรุงเทพมหานคร': this.state.province_state}
+                  selectedValue={this.state.province_state == ''? 'กระบี่': this.state.province_state}
                   style={{flex:1}}
                   onValueChange={
                     (itemValue, itemIndex) =>
@@ -85,22 +84,24 @@ componentDidMount() {
           </View>
           <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:height*0.04}}>
             <View style={{marginLeft:5}}>
-              <TouchableOpacity style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} 
+              <TouchableOpacity 
+              style={{flexDirection:'row', padding:10, backgroundColor:'#b2bec3', borderRadius:5 }} activeOpacity={0.5} 
              onPress= { () => {
-              let shop = new Object
               let get_filter_shop = []
                this.props.handleGetShop !== null && this.props.handleGetShop.map((value) => {
-                 shop = value
+                let shop = new Object
                 if ((value.province.id == this.state.province_state) && (value.category.id == this.state.category_state)) {
-                  shop.pincolor = "red"
+                  shop = value
+                  shop.pinColor = '#ff0000'
                 }
                  else{
-                  shop.pincolor = "gray"
+                  shop.location = value.location
+                  shop.pinColor = '#848484'
                  }
-                 get_filter_shop.push(value)
+                 get_filter_shop.push(shop)
                })
-               console.log(get_filter_shop)
-                // this.props.hadleCallbackModal(false)
+                this.props.handleGetSearchData(get_filter_shop)
+                this.props.hadleCallbackModal(false)
               }
             }
               >
