@@ -107,9 +107,9 @@ export default class Mapview extends Component {
                 coordinate={marker.location}
                 title={marker.name}
                 description={marker.des}
-                // pinColor={'#01a69f'} 
-                onMapPress
-                onPress={() => {this.modalDetailPoint(marker.id)}}
+                pinColor={marker.pinColor == 'undefined' ? null : marker.pinColor} 
+                // onMapPress
+                onPress={ () => { marker.id == null ? null : this.modalDetailPoint(marker.id) } }
             >
               <MapView.Callout  >
                 <View style={{flex:1, borderRadius:40, padding:5}}>
