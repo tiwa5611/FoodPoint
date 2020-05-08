@@ -27,7 +27,7 @@ export default class FloatingButtonScreen extends Component {
       get_categorial:[],
       get_province:[],
       get_shop:[],
-      get_shop_search:[],
+      get_shop_search:null,
       //--------------------------- variable for input form ----------------------
       shop_name_state:'',
       description_state:'',
@@ -84,7 +84,6 @@ export default class FloatingButtonScreen extends Component {
     this.setState({
       get_shop_search:data
     })
-    console.log(this.state.get_shop_search)
   }
 
   handleLatLong (lat, lng) {
