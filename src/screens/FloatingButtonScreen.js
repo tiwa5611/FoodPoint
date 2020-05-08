@@ -223,6 +223,7 @@ export default class FloatingButtonScreen extends Component {
             <Search
               hadleModal={this.state.isModalVisibleSearch}
               hadleCallbackModal={this.hadleStateModal}
+              handleGetShop = {this.state.get_shop}
               handleGetSearchData={this.searchData}
             />
             {/* <------------------------------------------------------------------- Modal form input -------------------------------------------------------------- */} 
