@@ -27,7 +27,7 @@ export default class FloatingButtonScreen extends Component {
       get_categorial:[],
       get_province:[],
       get_shop:[],
-      get_shop_search:[],
+      get_shop_search:null,
       //--------------------------- variable for input form ----------------------
       shop_name_state:'',
       description_state:'',
@@ -217,7 +217,8 @@ export default class FloatingButtonScreen extends Component {
   }
 
   render() {
-    // console.log('state search modal: ', this.state.isModalVisibleSearch)
+    console.log('state search Search: ', this.state.get_shop_search)
+    console.log('state search API: ', this.state.get_shop)
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 

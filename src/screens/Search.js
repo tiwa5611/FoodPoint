@@ -96,7 +96,7 @@ componentDidMount() {
                 }
                  else{
                   shop.location = value.location
-                  shop.pinColor = '#848484'
+                  shop.pinColor = '#95afc0'
                  }
                  get_filter_shop.push(shop)
                })

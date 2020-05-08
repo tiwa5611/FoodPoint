@@ -107,15 +107,18 @@ export default class Mapview extends Component {
                 coordinate={marker.location}
                 title={marker.name}
                 description={marker.des}
-                pinColor={marker.pinColor == 'undefined' ? null : marker.pinColor} 
+                pinColor={marker.pinColor}
+                opacity={marker.id == undefined? 0.4 : 1}
                 // onMapPress
-                onPress={ () => { marker.id == null ? null : this.modalDetailPoint(marker.id) } }
+                onPress={ () => {this.modalDetailPoint(marker.id) } }
             >
-              <MapView.Callout  >
-                <View style={{flex:1, borderRadius:40, padding:5}}>
-                  <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}}>{marker.name}</Text>
-                </View>
-              </MapView.Callout>
+                <MapView.Callout >
+                  {marker.id == undefined? <View/> : 
+                  <View style={{flex:1, borderRadius:40, padding:5}}>
+                    <Text style={{marginLeft:10, fontSize:width*0.04, fontFamily:'Kanit-ExtraLight'}}>{marker.name}</Text>
+                  </View>
+                  }
+                </MapView.Callout>
             </MapView.Marker>
           ))
         }
@@ -174,37 +177,6 @@ export default class Mapview extends Component {
               </ScrollView>
             </View>
           </Modal>
-          <AlertPro
-            ref={ref => {
-              this.AlertPro = ref;
-            }}
-            onConfirm={ this.props.haddleManageLoginUser }
-            useNativeDriver={true}
-            onCancel={() => this.AlertPro.close()}
-            title="Delete confirmation"
-            transparent={false}
-            message="Are you sure to delete the entry?"
-            textCancel="Cancel"
-            textConfirm="Confirm"
-            customStyles={{
-              mask: {
-                backgroundColor: "transparent"
-              },
-              // container: {
-              //   borderWidth: 1,
-              //   borderColor: "gray",
-              //   shadowColor: "#000000",
-              //   shadowOpacity: 0.1,
-              //   shadowRadius: 10
-              // },
-              buttonCancel: {
-                backgroundColor: "#4da6ff"
-              },
-              buttonConfirm: {
-                backgroundColor: "#ffa31a"
-              }
-            }}
-          />
       </View>
     );
   }
@@ -233,24 +205,26 @@ export default class Mapview extends Component {
   }
 
   modalDetailPoint( id ) {
-    fetch('http://sharing.greenmile.co.th/api/get_shop/'+id)
-    .then((response) => response.json())
-    .then((json) => {
-      this.setState({
-        id_detail:json.data.id,
-        name_detail:json.data.name,
-        des_detail:json.data.description,
-        phon_detail:json.data.phonenumber,
-        line_detail:json.data.line_id,
-        facebook_detail:json.data.user.facebook_id,
-        isModalVisible: true,
-        lat:json.data.location.latitude,
-        lng:json.data.location.longitude
+    if( id != undefined) {
+      fetch('http://sharing.greenmile.co.th/api/get_shop/'+id)
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({
+          id_detail:json.data.id,
+          name_detail:json.data.name,
+          des_detail:json.data.description,
+          phon_detail:json.data.phonenumber,
+          line_detail:json.data.line_id,
+          facebook_detail:json.data.user.facebook_id,
+          isModalVisible: true,
+          lat:json.data.location.latitude,
+          lng:json.data.location.longitude
+        })
       })
-    })
-    .catch((error) => {
-      console.error('Error in fetchAPIGet_category: ',error);
-    });
+      .catch((error) => {
+        console.error('Error in fetchAPIGet_category: ',error);
+      });
+    }
   }
 
   fetchAPIGet_Shop() {
