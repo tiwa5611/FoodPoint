@@ -25,6 +25,7 @@ export default class Mapview extends Component {
       phon_detail:'',
       line_detail:'',
       facebook_detail:'',
+      facebook_id:''
     };
   }
 
@@ -215,7 +216,8 @@ export default class Mapview extends Component {
           des_detail:json.data.description,
           phon_detail:json.data.phonenumber,
           line_detail:json.data.line_id,
-          facebook_detail:json.data.user.facebook_id,
+          facebook_detail:json.data.facebook_id,
+          facebook_id:json.data.user.facebook_id,
           isModalVisible: true,
           lat:json.data.location.latitude,
           lng:json.data.location.longitude

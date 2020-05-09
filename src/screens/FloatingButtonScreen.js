@@ -2,7 +2,6 @@ import React, { Component, useState } from 'react';
 import { Alert, View, Text, StyleSheet, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import ImagePicker from 'react-native-image-crop-picker';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager}from 'react-native-fbsdk';
 import Map from './Map';
 import Search from './Search'
@@ -216,8 +215,6 @@ export default class FloatingButtonScreen extends Component {
   }
 
   render() {
-    console.log('state search Search: ', this.state.get_shop_search)
-    console.log('state search API: ', this.state.get_shop)
     return (
         <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
             {/* <---------------------------------------------------------------------------Map--------------------------------------------------------------------- */} 
