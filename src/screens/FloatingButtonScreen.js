@@ -1,8 +1,8 @@
 import React, { Component, useState } from 'react';
 import { Alert, View, Text, StyleSheet, TextInput, Modal, Dimensions, AsyncStorage, ScrollView, Picker, TouchableOpacity} from 'react-native';
 import ActionButton from 'react-native-action-button';
-import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import ImagePicker from 'react-native-image-crop-picker';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager}from 'react-native-fbsdk';
 import Map from './Map';
 import Search from './Search'
